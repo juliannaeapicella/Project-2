@@ -42,7 +42,7 @@ const PlantForm = (props) => {
         <select id="plantNeeds" name="needs">
           <option value="1">Very High</option>
           <option value="2">High</option>
-          <option value="3">Average</option>
+          <option value="3" selected>Average</option>
           <option value="4">Low</option>
           <option value="5">Very Low</option>
         </select>
