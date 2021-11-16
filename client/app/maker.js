@@ -33,8 +33,8 @@ const PlantForm = (props) => {
 
         <label htmlFor="location">Location: </label>
         <select id="plantLocation" name="location">
-          <option value="indoors">Indoors</option>
-          <option value="outdoors">Outdoors</option>
+          <option value="Indoors">Indoors</option>
+          <option value="Outdoors">Outdoors</option>
         </select>
 
         <label htmlFor="needs">Watering Needs: </label>
@@ -66,7 +66,6 @@ const PlantList = function(props) {
 
   const plantNodes = props.plants.map(function(plant) {
     const lastWatered = plant.lastWatered.split('T')[0];
-    const plantNextWatering = calculateNextWateringDate(plant);
 
     return (
         <div key={plant._id} 
@@ -74,9 +73,9 @@ const PlantList = function(props) {
           className="plant" >
             <h3 data-value={plant.species} className="plantSpecies">Species: {plant.species} </h3>
             <h3 data-value={plant.location} className="plantLocation">Location: {plant.location} </h3>
-            <h3 data-value={plant.needs} className="plantNeeds">Watering Needs: {plant.needs} </h3>
+            <h3 data-value={plant.needs} className="plantNeeds">Watering Needs: {convertNeedsToString(plant.needs)} </h3>
             <h3 data-value={lastWatered} className="plantLastWatered">Last Watered On: {lastWatered} </h3>
-            <h3 className="plantNextWatering">Water On: {plantNextWatering} </h3> 
+            <h3 className="plantNextWatering">Water On: {calculateNextWateringDate(plant)} </h3> 
             <button className="deletePlant" onClick={deletePlant}>Remove</button>
             <button className="editPlant" onClick={openEditPlant}>Edit</button>
         </div>
@@ -101,8 +100,8 @@ const EditPlantNode = function(props) {
 
         <label htmlFor="location">Location: </label>
         <select id="plantLocationEdit" name="location" defaultValue={props.plant.location}>
-          <option value="indoors">Indoors</option>
-          <option value="outdoors">Outdoors</option>
+          <option value="Indoors">Indoors</option>
+          <option value="Outdoors">Outdoors</option>
         </select>
 
         <label htmlFor="needs">Watering Needs: </label>

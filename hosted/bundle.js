@@ -40,9 +40,9 @@ var PlantForm = function PlantForm(props) {
     id: "plantLocation",
     name: "location"
   }, /*#__PURE__*/React.createElement("option", {
-    value: "indoors"
+    value: "Indoors"
   }, "Indoors"), /*#__PURE__*/React.createElement("option", {
-    value: "outdoors"
+    value: "Outdoors"
   }, "Outdoors")), /*#__PURE__*/React.createElement("label", {
     htmlFor: "needs"
   }, "Watering Needs: "), /*#__PURE__*/React.createElement("select", {
@@ -87,7 +87,6 @@ var PlantList = function PlantList(props) {
 
   var plantNodes = props.plants.map(function (plant) {
     var lastWatered = plant.lastWatered.split('T')[0];
-    var plantNextWatering = calculateNextWateringDate(plant);
     return /*#__PURE__*/React.createElement("div", {
       key: plant._id,
       id: plant._id,
@@ -101,12 +100,12 @@ var PlantList = function PlantList(props) {
     }, "Location: ", plant.location, " "), /*#__PURE__*/React.createElement("h3", {
       "data-value": plant.needs,
       className: "plantNeeds"
-    }, "Watering Needs: ", plant.needs, " "), /*#__PURE__*/React.createElement("h3", {
+    }, "Watering Needs: ", convertNeedsToString(plant.needs), " "), /*#__PURE__*/React.createElement("h3", {
       "data-value": lastWatered,
       className: "plantLastWatered"
     }, "Last Watered On: ", lastWatered, " "), /*#__PURE__*/React.createElement("h3", {
       className: "plantNextWatering"
-    }, "Water On: ", plantNextWatering, " "), /*#__PURE__*/React.createElement("button", {
+    }, "Water On: ", calculateNextWateringDate(plant), " "), /*#__PURE__*/React.createElement("button", {
       className: "deletePlant",
       onClick: deletePlant
     }, "Remove"), /*#__PURE__*/React.createElement("button", {
@@ -140,9 +139,9 @@ var EditPlantNode = function EditPlantNode(props) {
     name: "location",
     defaultValue: props.plant.location
   }, /*#__PURE__*/React.createElement("option", {
-    value: "indoors"
+    value: "Indoors"
   }, "Indoors"), /*#__PURE__*/React.createElement("option", {
-    value: "outdoors"
+    value: "Outdoors"
   }, "Outdoors")), /*#__PURE__*/React.createElement("label", {
     htmlFor: "needs"
   }, "Watering Needs: "), /*#__PURE__*/React.createElement("select", {
@@ -304,7 +303,7 @@ var addDays = function addDays(date, days) {
 };
 
 var convertNeedsToDays = function convertNeedsToDays(location, needs) {
-  var days = location === 'indoors' ? [1, 3, 7, 7, 7] : [2, 4, 7, 10, 14];
+  var days = location === 'Indoors' ? [1, 3, 7, 7, 7] : [2, 4, 7, 10, 14];
 
   switch (needs) {
     case 1:
@@ -323,7 +322,29 @@ var convertNeedsToDays = function convertNeedsToDays(location, needs) {
       return days[4];
 
     default:
-      return days[0];
+      return days[2];
+  }
+};
+
+var convertNeedsToString = function convertNeedsToString(needs) {
+  switch (needs) {
+    case 1:
+      return "Very High";
+
+    case 2:
+      return "High";
+
+    case 3:
+      return "Average";
+
+    case 4:
+      return "Low";
+
+    case 5:
+      return "Very Low";
+
+    default:
+      return "Average";
   }
 };
 
