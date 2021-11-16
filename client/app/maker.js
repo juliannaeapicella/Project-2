@@ -27,8 +27,7 @@ const PlantForm = (props) => {
       name="plantForm"
       action="/maker"
       method="POST"
-      className="plantForm"
-    >
+      className="plantForm">
         <label htmlFor="species">Species: </label>
         <input id="plantSpecies" type="text" name="species" placeholder="Mint, Rose, etc." />
 
@@ -42,7 +41,7 @@ const PlantForm = (props) => {
         <select id="plantNeeds" name="needs">
           <option value="1">Very High</option>
           <option value="2">High</option>
-          <option value="3" selected>Average</option>
+          <option value="3">Average</option>
           <option value="4">Low</option>
           <option value="5">Very Low</option>
         </select>
@@ -66,16 +65,20 @@ const PlantList = function(props) {
   }
 
   const plantNodes = props.plants.map(function(plant) {
+    const lastWatered = plant.lastWatered.split('T')[0];
+    const plantNextWatering = calculateNextWateringDate(plant);
+
     return (
         <div key={plant._id} 
           id={plant._id} 
           className="plant" >
-            <h3 className="plantSpecies">Species: {plant.species} </h3>
-            <h3 className="plantLocation">Location: {plant.location} </h3>
-            <h3 className="plantNeeds">Watering Needs: {plant.needs} </h3>
-            <h3 className="plantLastWatered">Last Watered On: {plant.lastWatered} </h3>
-            <h3 className="plantNextWatering">Water On: TBD </h3> 
-            <button className="deletePlantSubmit" value="Delete" onClick={deletePlant}>Remove</button>
+            <h3 data-value={plant.species} className="plantSpecies">Species: {plant.species} </h3>
+            <h3 data-value={plant.location} className="plantLocation">Location: {plant.location} </h3>
+            <h3 data-value={plant.needs} className="plantNeeds">Watering Needs: {plant.needs} </h3>
+            <h3 data-value={lastWatered} className="plantLastWatered">Last Watered On: {lastWatered} </h3>
+            <h3 className="plantNextWatering">Water On: {plantNextWatering} </h3> 
+            <button className="deletePlant" onClick={deletePlant}>Remove</button>
+            <button className="editPlant" onClick={openEditPlant}>Edit</button>
         </div>
     );
   });
@@ -84,6 +87,39 @@ const PlantList = function(props) {
       <div className="plantList">
           {plantNodes}
       </div>
+  );
+};
+
+const EditPlantNode = function(props) {
+  return (
+    <form key={props.plant.id + "-edit"} 
+      id={props.plant.id + "-edit"}
+      onSubmit={editPlant}
+      className="editing-plant" >
+        <label htmlFor="species">Species: </label>
+        <input id="plantSpeciesEdit" type="text" name="species" placeholder="Mint, Rose, etc." defaultValue={props.plant.species} />
+
+        <label htmlFor="location">Location: </label>
+        <select id="plantLocationEdit" name="location" defaultValue={props.plant.location}>
+          <option value="indoors">Indoors</option>
+          <option value="outdoors">Outdoors</option>
+        </select>
+
+        <label htmlFor="needs">Watering Needs: </label>
+        <select id="plantNeedsEdit" name="needs" defaultValue={props.plant.needs}>
+          <option value="1">Very High</option>
+          <option value="2">High</option>
+          <option value="3">Average</option>
+          <option value="4">Low</option>
+          <option value="5">Very Low</option>
+        </select>
+
+        <label htmlFor="lastWatered">Last Watered On: </label>
+        <input id="plantLastWateredEdit" type="date" name="lastWatered" max={props.today} defaultValue={props.plant.lastWatered} />
+
+        <input type="hidden" name="_csrf" value={props.csrf} />
+        <input className="editPlantSubmit" type="submit" value="Save" />
+    </form>
   );
 };
 
@@ -96,22 +132,62 @@ const loadPlantsFromServer = () => {
 };
 
 const deletePlant = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const data = `id=${e.currentTarget.parentElement.id}&_csrf=${token}`
+  const data = `id=${e.currentTarget.parentElement.id}&_csrf=${token}`
 
-    sendAjax('DELETE', "/deletePlant", data, () => {
+  sendAjax('DELETE', "/deletePlant", data, () => {
+      loadPlantsFromServer();
+  });
+
+  return false;
+};
+
+const openEditPlant = (e) => {
+  const div = e.currentTarget.parentElement;
+
+  const plant = {
+    id: div.id,
+    species: div.children[0].getAttribute("data-value"),
+    location: div.children[1].getAttribute("data-value"),
+    needs: div.children[2].getAttribute("data-value"),
+    lastWatered: div.children[3].getAttribute("data-value"),
+  };
+
+  ReactDOM.render(
+    <EditPlantNode csrf={token} plant={plant} />, document.querySelector("#plants")
+  );
+};
+
+const editPlant = (e) => {
+  e.preventDefault();
+
+  const id = e.currentTarget.id.split('-')[0];
+
+  const data = `id=${id}&_csrf=${token}`;
+
+  if($("#plantSpeciesEdit").val() == '' 
+  || $("#plantLocationEdit").val() == '' 
+  || $("#plantNeedsEdit").val() == ''
+  || $("#plantLastWateredEdit").val() == '') {
+    handleError("All fields are required.");
+    return false;
+  }
+
+  sendAjax('DELETE', "/deletePlant", data, () => {
+    sendAjax('POST', '/maker', $("#" + id + "-edit").serialize(), function() {
         loadPlantsFromServer();
     });
+  });
 
-    return false;
+  return false;
 };
 
 const setup = function(csrf) {
-  //add today calculation
+  const today = convertDateToYYYYMMDD(new Date());
 
   ReactDOM.render(
-      <PlantForm csrf={csrf} />, document.querySelector("#makePlant")
+      <PlantForm csrf={csrf} today={today} />, document.querySelector("#makePlant")
   );
 
   ReactDOM.render(
