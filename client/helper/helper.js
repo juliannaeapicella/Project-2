@@ -37,7 +37,7 @@ const convertDateToYYYYMMDD = (date) => {
   } 
       
   return year + '-' + month + '-' + day;
-}
+};
 
 const addDays = (date, days) => {
   var result = new Date(date);
@@ -84,4 +84,67 @@ const convertNeedsToString = (needs) => {
 const calculateNextWateringDate = (plant) => {
   const date = addDays(plant.lastWatered, convertNeedsToDays(plant.location, plant.needs));
   return convertDateToYYYYMMDD(date);
+};
+
+const compareStrings = (str1, str2) => {
+  if (str1 < str2) {
+    return -1;
+  }
+  if (str1 > str2) {
+    return 1;
+  }
+  return 0;
+};
+
+const sortBySpecies = (arr, isAscending) => {
+  if (isAscending) {
+    arr.sort((a, b) => compareStrings(a.species, b.species));
+  } else {
+    arr.sort((a, b) => compareStrings(b.species, a.species));
+  }
+};
+
+const sortByLastWatered = (arr, isAscending) => {
+  if (isAscending) {
+    arr.sort((a, b) => new Date(a.lastWatered) - new Date(b.lastWatered));
+  } else {
+    arr.sort((a, b) => new Date(b.lastWatered) - new Date(a.lastWatered));
+  }
+};
+
+const sortByToWaterNext = (arr, isAscending) => {
+  if (isAscending) {
+    arr.sort((a, b) => 
+      new Date(calculateNextWateringDate(a)) - new Date(calculateNextWateringDate(b)));
+  } else {
+    arr.sort((a, b) => 
+      new Date(calculateNextWateringDate(b)) - new Date(calculateNextWateringDate(a)));
+  }
+};
+
+const sortPlants = (plants) => {
+  const currentSort = document.querySelector('#sort').value;
+
+  const buttons = document.querySelectorAll('.sortDirection');
+  let isAscending;
+  for(let i = 0; i < buttons.length; i++) {
+    if (buttons[i].checked) {
+      isAscending = buttons[i].value === 'true';
+    }
+  }
+
+  switch (currentSort) {
+    case '1':
+      sortByLastWatered(plants, isAscending);
+      break;
+    case '2':
+      sortByToWaterNext(plants, isAscending);
+      break;
+    case '3':
+      sortBySpecies(plants, isAscending);
+      break;
+    default: 
+      sortBySpecies(plants, isAscending);
+      break;
+  }
 }

@@ -26,6 +26,7 @@ const makePlant = (req, res) => {
     location: req.body.location,
     needs: req.body.needs,
     lastWatered: req.body.lastWatered,
+    image: req.body.image ? req.body.image : undefined,
     owner: req.session.account._id,
   };
 

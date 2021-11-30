@@ -39,6 +39,11 @@ const PlantSchema = new mongoose.Schema({
     ref: 'Account',
   },
 
+  image: {
+    type: String,
+    default: 'https://www.ikea.com/us/en/images/products/fejka-artificial-potted-plant-with-pot-indoor-outdoor-succulent__0614211_pe686835_s5.jpg?f=s',
+  },
+
   createdData: {
     type: Date,
     default: Date.now,
@@ -50,6 +55,7 @@ PlantSchema.statics.toAPI = (doc) => ({
   location: doc.location,
   needs: doc.needs,
   lastWatered: doc.lastWatered,
+  image: doc.image,
 });
 
 PlantSchema.statics.findByOwner = (ownerId, callback) => {
@@ -57,7 +63,7 @@ PlantSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertId(ownerId),
   };
 
-  return PlantModel.find(search).select('species location needs lastWatered').lean().exec(callback);
+  return PlantModel.find(search).select('species location needs lastWatered image').lean().exec(callback);
 };
 
 PlantSchema.statics.delete = (id, callback) => PlantModel.deleteOne({ _id: id }).exec(callback);

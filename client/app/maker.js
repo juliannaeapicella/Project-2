@@ -49,9 +49,29 @@ const PlantForm = (props) => {
         <label htmlFor="lastWatered">Last Watered On: </label>
         <input id="plantLastWatered" type="date" name="lastWatered" max={props.today} />
 
+        <label htmlFor="image">Image URL (optional): </label>
+        <input id="plantImage" type="text" name="image" />
+
         <input type="hidden" name="_csrf" value={props.csrf} />
         <input className="makePlantSubmit" type="submit" value="Add Plant" />
     </form>
+  );
+};
+
+const SortPanel = function() {
+  return (
+    <div id="sortPanel">
+      <label htmlFor="sort">Sort Plants By: </label>
+      <select id="sort" name="sort" defaultValue="1" onChange={loadPlantsFromServer} >
+        <option value={1}>Last Watered</option>
+        <option value={2}>To Water Next</option>
+        <option value={3}>Species</option>
+      </select>
+      <input type="radio" id="ascending" className="sortDirection" name="sortDirection" value={true} onChange={loadPlantsFromServer} defaultChecked/>
+      <label htmlFor="ascending">Ascending</label>
+      <input type="radio" id="descending" className="sortDirection" name="sortDirection" value={false} onChange={loadPlantsFromServer} />
+      <label htmlFor="descending">Descending</label>
+    </div>
   );
 };
 
@@ -64,6 +84,8 @@ const PlantList = function(props) {
       );
   }
 
+  sortPlants(props.plants);
+
   const plantNodes = props.plants.map(function(plant) {
     const lastWatered = plant.lastWatered.split('T')[0];
 
@@ -71,6 +93,7 @@ const PlantList = function(props) {
         <div key={plant._id} 
           id={plant._id} 
           className="plant" >
+            <img data-value={plant.image} className="plantImage" src={plant.image} alt={plant.species} width="100" height="100" />
             <h3 data-value={plant.species} className="plantSpecies">Species: {plant.species} </h3>
             <h3 data-value={plant.location} className="plantLocation">Location: {plant.location} </h3>
             <h3 data-value={plant.needs} className="plantNeeds">Watering Needs: {convertNeedsToString(plant.needs)} </h3>
@@ -83,9 +106,9 @@ const PlantList = function(props) {
   });
 
   return (
-      <div className="plantList">
-          {plantNodes}
-      </div>
+    <div className="plantList">
+      {plantNodes}
+    </div>
   );
 };
 
@@ -115,6 +138,9 @@ const EditPlantNode = function(props) {
 
         <label htmlFor="lastWatered">Last Watered On: </label>
         <input id="plantLastWateredEdit" type="date" name="lastWatered" max={props.today} defaultValue={props.plant.lastWatered} />
+
+        <label htmlFor="image">Image URL (optional): </label>
+        <input id="plantImageEdit" type="text" name="image" defaultValue={props.plant.image} />
 
         <input type="hidden" name="_csrf" value={props.csrf} />
         <input className="editPlantSubmit" type="submit" value="Save" />
@@ -147,10 +173,11 @@ const openEditPlant = (e) => {
 
   const plant = {
     id: div.id,
-    species: div.children[0].getAttribute("data-value"),
-    location: div.children[1].getAttribute("data-value"),
-    needs: div.children[2].getAttribute("data-value"),
-    lastWatered: div.children[3].getAttribute("data-value"),
+    species: div.children[1].getAttribute("data-value"),
+    location: div.children[2].getAttribute("data-value"),
+    needs: div.children[3].getAttribute("data-value"),
+    lastWatered: div.children[4].getAttribute("data-value"),
+    image: div.children[0].getAttribute("data-value"),
   };
 
   ReactDOM.render(
@@ -191,6 +218,10 @@ const setup = function(csrf) {
 
   ReactDOM.render(
     <PlantForm plants={[]} />, document.querySelector("#plants")
+  );
+
+  ReactDOM.render(
+    <SortPanel />, document.querySelector("#sortPanel")
   );
 
   token = csrf;

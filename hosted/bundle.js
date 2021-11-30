@@ -65,6 +65,12 @@ var PlantForm = function PlantForm(props) {
     type: "date",
     name: "lastWatered",
     max: props.today
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "image"
+  }, "Image URL (optional): "), /*#__PURE__*/React.createElement("input", {
+    id: "plantImage",
+    type: "text",
+    name: "image"
   }), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
@@ -76,6 +82,44 @@ var PlantForm = function PlantForm(props) {
   }));
 };
 
+var SortPanel = function SortPanel() {
+  return /*#__PURE__*/React.createElement("div", {
+    id: "sortPanel"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "sort"
+  }, "Sort Plants By: "), /*#__PURE__*/React.createElement("select", {
+    id: "sort",
+    name: "sort",
+    defaultValue: "1",
+    onChange: loadPlantsFromServer
+  }, /*#__PURE__*/React.createElement("option", {
+    value: 1
+  }, "Last Watered"), /*#__PURE__*/React.createElement("option", {
+    value: 2
+  }, "To Water Next"), /*#__PURE__*/React.createElement("option", {
+    value: 3
+  }, "Species")), /*#__PURE__*/React.createElement("input", {
+    type: "radio",
+    id: "ascending",
+    className: "sortDirection",
+    name: "sortDirection",
+    value: true,
+    onChange: loadPlantsFromServer,
+    defaultChecked: true
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "ascending"
+  }, "Ascending"), /*#__PURE__*/React.createElement("input", {
+    type: "radio",
+    id: "descending",
+    className: "sortDirection",
+    name: "sortDirection",
+    value: false,
+    onChange: loadPlantsFromServer
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "descending"
+  }, "Descending"));
+};
+
 var PlantList = function PlantList(props) {
   if (props.plants.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
@@ -85,13 +129,21 @@ var PlantList = function PlantList(props) {
     }, "No Plants yet!"));
   }
 
+  sortPlants(props.plants);
   var plantNodes = props.plants.map(function (plant) {
     var lastWatered = plant.lastWatered.split('T')[0];
     return /*#__PURE__*/React.createElement("div", {
       key: plant._id,
       id: plant._id,
       className: "plant"
-    }, /*#__PURE__*/React.createElement("h3", {
+    }, /*#__PURE__*/React.createElement("img", {
+      "data-value": plant.image,
+      className: "plantImage",
+      src: plant.image,
+      alt: plant.species,
+      width: "100",
+      height: "100"
+    }), /*#__PURE__*/React.createElement("h3", {
       "data-value": plant.species,
       className: "plantSpecies"
     }, "Species: ", plant.species, " "), /*#__PURE__*/React.createElement("h3", {
@@ -166,6 +218,13 @@ var EditPlantNode = function EditPlantNode(props) {
     name: "lastWatered",
     max: props.today,
     defaultValue: props.plant.lastWatered
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "image"
+  }, "Image URL (optional): "), /*#__PURE__*/React.createElement("input", {
+    id: "plantImageEdit",
+    type: "text",
+    name: "image",
+    defaultValue: props.plant.image
   }), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
@@ -198,10 +257,11 @@ var openEditPlant = function openEditPlant(e) {
   var div = e.currentTarget.parentElement;
   var plant = {
     id: div.id,
-    species: div.children[0].getAttribute("data-value"),
-    location: div.children[1].getAttribute("data-value"),
-    needs: div.children[2].getAttribute("data-value"),
-    lastWatered: div.children[3].getAttribute("data-value")
+    species: div.children[1].getAttribute("data-value"),
+    location: div.children[2].getAttribute("data-value"),
+    needs: div.children[3].getAttribute("data-value"),
+    lastWatered: div.children[4].getAttribute("data-value"),
+    image: div.children[0].getAttribute("data-value")
   };
   ReactDOM.render( /*#__PURE__*/React.createElement(EditPlantNode, {
     csrf: token,
@@ -236,6 +296,7 @@ var setup = function setup(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(PlantForm, {
     plants: []
   }), document.querySelector("#plants"));
+  ReactDOM.render( /*#__PURE__*/React.createElement(SortPanel, null), document.querySelector("#sortPanel"));
   token = csrf;
   loadPlantsFromServer();
 };
@@ -351,4 +412,82 @@ var convertNeedsToString = function convertNeedsToString(needs) {
 var calculateNextWateringDate = function calculateNextWateringDate(plant) {
   var date = addDays(plant.lastWatered, convertNeedsToDays(plant.location, plant.needs));
   return convertDateToYYYYMMDD(date);
+};
+
+var compareStrings = function compareStrings(str1, str2) {
+  if (str1 < str2) {
+    return -1;
+  }
+
+  if (str1 > str2) {
+    return 1;
+  }
+
+  return 0;
+};
+
+var sortBySpecies = function sortBySpecies(arr, isAscending) {
+  if (isAscending) {
+    arr.sort(function (a, b) {
+      return compareStrings(a.species, b.species);
+    });
+  } else {
+    arr.sort(function (a, b) {
+      return compareStrings(b.species, a.species);
+    });
+  }
+};
+
+var sortByLastWatered = function sortByLastWatered(arr, isAscending) {
+  if (isAscending) {
+    arr.sort(function (a, b) {
+      return new Date(a.lastWatered) - new Date(b.lastWatered);
+    });
+  } else {
+    arr.sort(function (a, b) {
+      return new Date(b.lastWatered) - new Date(a.lastWatered);
+    });
+  }
+};
+
+var sortByToWaterNext = function sortByToWaterNext(arr, isAscending) {
+  if (isAscending) {
+    arr.sort(function (a, b) {
+      return new Date(calculateNextWateringDate(a)) - new Date(calculateNextWateringDate(b));
+    });
+  } else {
+    arr.sort(function (a, b) {
+      return new Date(calculateNextWateringDate(b)) - new Date(calculateNextWateringDate(a));
+    });
+  }
+};
+
+var sortPlants = function sortPlants(plants) {
+  var currentSort = document.querySelector('#sort').value;
+  var buttons = document.querySelectorAll('.sortDirection');
+  var isAscending;
+
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].checked) {
+      isAscending = buttons[i].value === 'true';
+    }
+  }
+
+  switch (currentSort) {
+    case '1':
+      sortByLastWatered(plants, isAscending);
+      break;
+
+    case '2':
+      sortByToWaterNext(plants, isAscending);
+      break;
+
+    case '3':
+      sortBySpecies(plants, isAscending);
+      break;
+
+    default:
+      sortBySpecies(plants, isAscending);
+      break;
+  }
 };
