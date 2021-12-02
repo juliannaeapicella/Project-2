@@ -1,10 +1,8 @@
 const handleError = (message) => {
   $("#errorMessage").text(message);
-  $("#plantMessage").animate({width:'toggle'},350);
 };
 
 const redirect = (response) => {
-  $("#plantMessage").animate({width:'hide'},350);
   window.location = response.redirect;
 };
 

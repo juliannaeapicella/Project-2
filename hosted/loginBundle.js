@@ -2,9 +2,6 @@
 
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
-  $("#plantMessage").animate({
-    width: 'hide'
-  }, 350);
 
   if ($("#user").val() == '' || $("#pass").val() == '') {
     handleError("Username or password is empty.");
@@ -17,9 +14,6 @@ var handleLogin = function handleLogin(e) {
 
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
-  $("#plantMessage").animate({
-    width: 'hide'
-  }, 350);
 
   if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
     handleError("All fields are required.");
@@ -37,9 +31,6 @@ var handleSignup = function handleSignup(e) {
 
 var handlePasswordChange = function handlePasswordChange(e) {
   e.preventDefault();
-  $("#plantMessage").animate({
-    width: 'hide'
-  }, 350);
 
   if ($("#oldPass").val() == '' || $("#newPass").val() == '' || $("#newPass2").val() == '') {
     handleError("All fields are required.");
@@ -220,15 +211,9 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#plantMessage").animate({
-    width: 'toggle'
-  }, 350);
 };
 
 var redirect = function redirect(response) {
-  $("#plantMessage").animate({
-    width: 'hide'
-  }, 350);
   window.location = response.redirect;
 };
 

@@ -1,9 +1,8 @@
 let token;
+let isPremium;
 
 const handlePlant = (e) => {
   e.preventDefault();
-
-  $("#plantMessage").animate({width:'hide'},350);
 
   if($("#plantSpecies").val() == '' 
     || $("#plantLocation").val() == '' 
@@ -25,7 +24,7 @@ const PlantForm = (props) => {
     <form id="plantForm"
       onSubmit={handlePlant}
       name="plantForm"
-      action="/maker"
+      action="/makePlant"
       method="POST"
       className="plantForm">
         <label htmlFor="species">Species: </label>
@@ -201,7 +200,7 @@ const editPlant = (e) => {
   }
 
   sendAjax('DELETE', "/deletePlant", data, () => {
-    sendAjax('POST', '/maker', $("#" + id + "-edit").serialize(), function() {
+    sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function() {
         loadPlantsFromServer();
     });
   });
@@ -210,6 +209,10 @@ const editPlant = (e) => {
 };
 
 const setup = function(csrf) {
+  sendAjax('GET', '/premium', null, (result) => {
+    console.log(result);
+  });
+
   const today = convertDateToYYYYMMDD(new Date());
 
   ReactDOM.render(

@@ -34,7 +34,7 @@ const makePlant = (req, res) => {
 
   const plantPromise = newPlant.save();
 
-  plantPromise.then(() => res.json({ redirect: '/maker' }));
+  plantPromise.then(() => res.json({ redirect: '/makePlant' }));
 
   plantPromise.catch((err) => {
     console.log(err);
@@ -68,7 +68,7 @@ const deletePlant = (request, response) => Plant.PlantModel.delete(request.body.
     return response.status(400).json({ error: 'An error occurred' });
   }
 
-  return response.json({ redirect: '/maker' });
+  return response.json({ redirect: '/makePlant' });
 });
 
 module.exports.makerPage = makerPage;

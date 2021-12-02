@@ -1,12 +1,10 @@
 "use strict";
 
 var token;
+var isPremium;
 
 var handlePlant = function handlePlant(e) {
   e.preventDefault();
-  $("#plantMessage").animate({
-    width: 'hide'
-  }, 350);
 
   if ($("#plantSpecies").val() == '' || $("#plantLocation").val() == '' || $("#plantNeeds").val() == '' || $("#plantLastWatered").val() == '') {
     handleError("All fields are required.");
@@ -24,7 +22,7 @@ var PlantForm = function PlantForm(props) {
     id: "plantForm",
     onSubmit: handlePlant,
     name: "plantForm",
-    action: "/maker",
+    action: "/makePlant",
     method: "POST",
     className: "plantForm"
   }, /*#__PURE__*/React.createElement("label", {
@@ -280,7 +278,7 @@ var editPlant = function editPlant(e) {
   }
 
   sendAjax('DELETE', "/deletePlant", data, function () {
-    sendAjax('POST', '/maker', $("#" + id + "-edit").serialize(), function () {
+    sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function () {
       loadPlantsFromServer();
     });
   });
@@ -288,6 +286,9 @@ var editPlant = function editPlant(e) {
 };
 
 var setup = function setup(csrf) {
+  sendAjax('GET', '/premium', null, function (result) {
+    console.log(result);
+  });
   var today = convertDateToYYYYMMDD(new Date());
   ReactDOM.render( /*#__PURE__*/React.createElement(PlantForm, {
     csrf: csrf,
@@ -314,15 +315,9 @@ $(document).ready(function () {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#plantMessage").animate({
-    width: 'toggle'
-  }, 350);
 };
 
 var redirect = function redirect(response) {
-  $("#plantMessage").animate({
-    width: 'hide'
-  }, 350);
   window.location = response.redirect;
 };
 

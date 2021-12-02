@@ -13,8 +13,8 @@ const router = (app) => {
   app.put('/changePassword', mid.requiresSecure, mid.requiresLogin, controllers.Account.changePassword);
   app.get('/premium', mid.requiresLogin, controllers.Account.isPremium);
   app.put('/premium', mid.requiresLogin, controllers.Account.enablePremium);
-  app.get('/maker', mid.requiresLogin, controllers.Plant.makerPage);
-  app.post('/maker', mid.requiresLogin, controllers.Plant.makePlant);
+  app.get('/makePlant', mid.requiresLogin, controllers.Plant.makerPage);
+  app.post('/makePlant', mid.requiresLogin, controllers.Plant.makePlant);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 
