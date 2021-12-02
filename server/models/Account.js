@@ -24,6 +24,10 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isPremium: {
+    type: Boolean,
+    default: false,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
@@ -79,6 +83,31 @@ AccountSchema.statics.authenticate = (username, password, callback) => {
       return callback();
     });
   });
+};
+
+AccountSchema.statics.updatePassword = (username, salt, password, callback) => {
+  const search = {
+    username,
+  };
+
+  const update = {
+    salt,
+    password,
+  };
+
+  return AccountModel.findOneAndUpdate(search, update, callback);
+};
+
+AccountSchema.statics.enablePremium = (id, callback) => {
+  const search = {
+    _id: id,
+  };
+
+  const update = {
+    isPremium: true,
+  };
+
+  return AccountModel.findOneAndUpdate(search, update, callback);
 };
 
 AccountModel = mongoose.model('Account', AccountSchema);

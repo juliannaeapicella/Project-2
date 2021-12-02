@@ -1,4 +1,5 @@
 const models = require('../models');
+const { AccountModel } = require('../models/Account');
 
 const { Account } = models;
 
@@ -77,6 +78,58 @@ const signup = (request, response) => {
   });
 };
 
+const changePasswordPage = (req, res) => {
+  res.render('changePassword', { csrfToken: req.csrfToken() });
+};
+
+const changePassword = (request, response) => {
+  const req = request;
+  const res = response;
+
+  const { username } = req.session.account;
+  //const { _id } = req.session.account;
+
+  req.body.oldPass = `${req.body.oldPass}`;
+  req.body.newPass = `${req.body.newPass}`;
+  req.body.newPass2 = `${req.body.newPass2}`;
+
+  if (!req.body.oldPass || !req.body.newPass || !req.body.newPass2) {
+    return res.status(400).json({ error: 'RAWR! All fields are required.' });
+  }
+
+  if (req.body.newPass !== req.body.newPass2) {
+    return res.status(400).json({ error: 'RAWR! Passwords do not match.' });
+  }
+
+  return Account.AccountModel.authenticate(username, req.body.oldPass, (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'Wrong username or password!' });
+    }
+
+    return Account.AccountModel.generateHash(req.body.newPass, (salt, hash) => {
+      const accountData = {
+        salt,
+        password: hash,
+      };
+
+      Account.AccountModel.updatePassword(username, accountData.salt, accountData.password, () => res.json({redirect: '/logout' }));
+    });
+  });
+};
+
+const enablePremium = (req, res) => {
+  const { _id } = req.session.account;
+  Account.AccountModel.enablePremium(_id, () => res.json({ redirect: '/maker' }));
+};
+
+const isPremium = (req, res) => {
+  const { username } = req.session.account;
+  Account.AccountModel.findByUsername(
+    username,
+    (_err, doc) => res.json({ isPremium: doc.isPremium }),
+  );
+};
+
 const getToken = (request, response) => {
   const req = request;
   const res = response;
@@ -92,4 +145,8 @@ module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;
+module.exports.changePasswordPage = changePasswordPage;
+module.exports.changePassword = changePassword;
+module.exports.enablePremium = enablePremium;
+module.exports.isPremium = isPremium;
 module.exports.getToken = getToken;
