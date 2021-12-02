@@ -1,5 +1,4 @@
 const models = require('../models');
-const { AccountModel } = require('../models/Account');
 
 const { Account } = models;
 
@@ -111,7 +110,7 @@ const changePassword = (request, response) => {
         password: hash,
       };
 
-      Account.AccountModel.updatePassword(username, accountData.salt, accountData.password, () => res.json({redirect: '/logout' }));
+      Account.AccountModel.updatePassword(username, accountData.salt, accountData.password, () => res.json({ redirect: '/logout' }));
     });
   });
 };
