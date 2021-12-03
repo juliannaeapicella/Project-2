@@ -79,7 +79,7 @@ const SignupWindow = (props) => {
       <input id="user" type="text" name="username" placeholder="username" />
       <label htmlFor="pass">Password: </label>
       <input id="pass" type="password" name="pass" placeholder="password" />
-      <label htmlFor="pass2">Password: </label>
+      <label htmlFor="pass2">Retype Password: </label>
       <input id="pass2" type="password" name="pass2" placeholder="retype password" />
       <input type="hidden" name="_csrf" value={props.csrf} />
       <input className="formSubmit" type="submit" value="Sign Up" />
@@ -136,6 +136,8 @@ const setup = (csrf) => {
   if (signupButton && loginButton) {
     signupButton.addEventListener("click", (e) => {
         e.preventDefault();
+        e.currentTarget.classList.add("current");
+        loginButton.classList.remove("current");
         createSignupWindow(csrf);
         return false;
     });
@@ -143,10 +145,13 @@ const setup = (csrf) => {
 
     loginButton.addEventListener("click", (e) => {
       e.preventDefault();
+      e.currentTarget.classList.add("current");
+      signupButton.classList.remove("current");
       createLoginWindow(csrf);
       return false;
     });
   
+    loginButton.classList.add("current");
     createLoginWindow(csrf);
   } else {
     createPasswordChangeWindow(csrf);

@@ -103,7 +103,7 @@ var SignupWindow = function SignupWindow(props) {
     placeholder: "password"
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "pass2"
-  }, "Password: "), /*#__PURE__*/React.createElement("input", {
+  }, "Retype Password: "), /*#__PURE__*/React.createElement("input", {
     id: "pass2",
     type: "password",
     name: "pass2",
@@ -184,14 +184,19 @@ var setup = function setup(csrf) {
   if (signupButton && loginButton) {
     signupButton.addEventListener("click", function (e) {
       e.preventDefault();
+      e.currentTarget.classList.add("current");
+      loginButton.classList.remove("current");
       createSignupWindow(csrf);
       return false;
     });
     loginButton.addEventListener("click", function (e) {
       e.preventDefault();
+      e.currentTarget.classList.add("current");
+      signupButton.classList.remove("current");
       createLoginWindow(csrf);
       return false;
     });
+    loginButton.classList.add("current");
     createLoginWindow(csrf);
   } else {
     createPasswordChangeWindow(csrf);
