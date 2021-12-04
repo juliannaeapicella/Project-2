@@ -40,7 +40,7 @@ p .fas {
     background-color: #685642;
 }
 
-nav .loginNav {
+.loginNav {
     display: flex;
     flex-direction: row;
     align-content: center;
@@ -150,12 +150,13 @@ input[type=submit]:hover {
     background-color: rgba(0,0,0,0.4);
 }
 
-nav {
+.mainNav {
     display: flex;
     flex-direction: row;
     align-content: center;
     justify-content: space-between;
     align-items: center;
+    background-color: #d4e5a1;
 }
 
 .appNav {
@@ -164,4 +165,26 @@ nav {
     justify-content: space-between;
     align-items: center;
     flex-direction: row;
+}
+
+.appNav .fas {
+    color: #8e996b;
+    font-size: 36pt;
+    margin: 0.2em 0.5em;
+}
+
+#userStatus {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+#userStatus .fas {
+    font-size: 12pt;
+    margin: 0;
+}
+
+.premium, 
+.premium .fas
+{
+    color: goldenrod;
 }

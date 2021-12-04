@@ -305,22 +305,27 @@ const createPremiumModal = (csrf) => {
 };
 
 const setup = function(csrf) {
+  const addButton = document.querySelector("#addButton");
+  const passwordButton = document.querySelector("#passwordButton");
+  const premiumButton = document.querySelector("#premiumButton");
+  
+  token = csrf;
+
   sendAjax('GET', '/premium', null, (result) => {
     isPremium = result.isPremium;
+
     ReactDOM.render(
       <UserStatus isPremium={isPremium} />, document.querySelector("#userStatus")
     );
-  });
 
-  token = csrf;
+    if (isPremium) {
+      premiumButton.style.display = "none";
+    }
+  });
 
   ReactDOM.render(
     <UserStatus username={"test"} isPremium={isPremium} />, document.querySelector("#userStatus")
   );
-
-  const addButton = document.querySelector("#addButton");
-  const passwordButton = document.querySelector("#passwordButton");
-  const premiumButton = document.querySelector("#premiumButton");
 
   addButton.addEventListener("click", (e) => {
     e.preventDefault();

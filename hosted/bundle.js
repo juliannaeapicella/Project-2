@@ -397,20 +397,24 @@ var createPremiumModal = function createPremiumModal(csrf) {
 };
 
 var setup = function setup(csrf) {
+  var addButton = document.querySelector("#addButton");
+  var passwordButton = document.querySelector("#passwordButton");
+  var premiumButton = document.querySelector("#premiumButton");
+  token = csrf;
   sendAjax('GET', '/premium', null, function (result) {
     isPremium = result.isPremium;
     ReactDOM.render( /*#__PURE__*/React.createElement(UserStatus, {
       isPremium: isPremium
     }), document.querySelector("#userStatus"));
+
+    if (isPremium) {
+      premiumButton.style.display = "none";
+    }
   });
-  token = csrf;
   ReactDOM.render( /*#__PURE__*/React.createElement(UserStatus, {
     username: "test",
     isPremium: isPremium
   }), document.querySelector("#userStatus"));
-  var addButton = document.querySelector("#addButton");
-  var passwordButton = document.querySelector("#passwordButton");
-  var premiumButton = document.querySelector("#premiumButton");
   addButton.addEventListener("click", function (e) {
     e.preventDefault();
     toggleModal();
