@@ -19,7 +19,7 @@ var handlePlant = function handlePlant(e) {
 
 var deletePlant = function deletePlant(e) {
   e.preventDefault();
-  var data = "id=".concat(e.currentTarget.parentElement.id, "&_csrf=").concat(token);
+  var data = "id=".concat(e.currentTarget.parentElement.parentElement.id, "&_csrf=").concat(token);
   sendAjax('DELETE', "/deletePlant", data, function () {
     loadPlantsFromServer();
   });
@@ -156,7 +156,9 @@ var SortPanel = function SortPanel() {
     defaultChecked: true
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "ascending"
-  }, "Ascending"), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-arrow-up"
+  })), /*#__PURE__*/React.createElement("input", {
     type: "radio",
     id: "descending",
     className: "sortDirection",
@@ -165,7 +167,9 @@ var SortPanel = function SortPanel() {
     onChange: loadPlantsFromServer
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "descending"
-  }, "Descending"));
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-arrow-down"
+  })));
 };
 
 var PlantList = function PlantList(props) {
@@ -194,24 +198,30 @@ var PlantList = function PlantList(props) {
     }), /*#__PURE__*/React.createElement("h3", {
       "data-value": plant.species,
       className: "plantSpecies"
-    }, "Species: ", plant.species, " "), /*#__PURE__*/React.createElement("h3", {
+    }, "Species: ", /*#__PURE__*/React.createElement("b", null, plant.species), " "), /*#__PURE__*/React.createElement("h3", {
       "data-value": plant.location,
       className: "plantLocation"
-    }, "Location: ", plant.location, " "), /*#__PURE__*/React.createElement("h3", {
+    }, "Location: ", /*#__PURE__*/React.createElement("b", null, plant.location), " "), /*#__PURE__*/React.createElement("h3", {
       "data-value": plant.needs,
       className: "plantNeeds"
-    }, "Watering Needs: ", convertNeedsToString(plant.needs), " "), /*#__PURE__*/React.createElement("h3", {
+    }, "Watering Needs: ", /*#__PURE__*/React.createElement("b", null, convertNeedsToString(plant.needs)), " "), /*#__PURE__*/React.createElement("h3", {
       "data-value": lastWatered,
       className: "plantLastWatered"
-    }, "Last Watered On: ", lastWatered, " "), /*#__PURE__*/React.createElement("h3", {
+    }, "Last Watered On: ", /*#__PURE__*/React.createElement("b", null, lastWatered), " "), /*#__PURE__*/React.createElement("h3", {
       className: "plantNextWatering"
-    }, "Water On: ", calculateNextWateringDate(plant), " "), /*#__PURE__*/React.createElement("button", {
+    }, "Water On: ", /*#__PURE__*/React.createElement("b", null, calculateNextWateringDate(plant)), " "), /*#__PURE__*/React.createElement("div", {
+      className: "buttons"
+    }, /*#__PURE__*/React.createElement("button", {
       className: "deletePlant",
       onClick: deletePlant
-    }, "Remove"), /*#__PURE__*/React.createElement("button", {
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "fas fa-trash-alt"
+    }), " Remove"), /*#__PURE__*/React.createElement("button", {
       className: "editPlant",
       onClick: openEditPlant
-    }, "Edit"));
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "fas fa-edit"
+    }), " Edit")));
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "plantList"
@@ -368,7 +378,7 @@ var createPlantModal = function createPlantModal(csrf) {
 };
 
 var openEditPlant = function openEditPlant(e) {
-  var div = e.currentTarget.parentElement;
+  var div = e.currentTarget.parentElement.parentElement;
   var plant = {
     id: div.id,
     species: div.children[1].getAttribute("data-value"),

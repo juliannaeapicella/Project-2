@@ -22,7 +22,7 @@ const handlePlant = (e) => {
 const deletePlant = (e) => {
   e.preventDefault();
 
-  const data = `id=${e.currentTarget.parentElement.id}&_csrf=${token}`
+  const data = `id=${e.currentTarget.parentElement.parentElement.id}&_csrf=${token}`
 
   sendAjax('DELETE', "/deletePlant", data, () => {
       loadPlantsFromServer();
@@ -127,9 +127,9 @@ const SortPanel = function() {
         <option value={3}>Species</option>
       </select>
       <input type="radio" id="ascending" className="sortDirection" name="sortDirection" value={true} onChange={loadPlantsFromServer} defaultChecked/>
-      <label htmlFor="ascending">Ascending</label>
+      <label htmlFor="ascending"><i className="fas fa-arrow-up"></i></label>
       <input type="radio" id="descending" className="sortDirection" name="sortDirection" value={false} onChange={loadPlantsFromServer} />
-      <label htmlFor="descending">Descending</label>
+      <label htmlFor="descending"><i className="fas fa-arrow-down"></i></label>
     </div>
   );
 };
@@ -153,13 +153,15 @@ const PlantList = function(props) {
           id={plant._id} 
           className="plant" >
             <img data-value={plant.image} className="plantImage" src={plant.image} alt={plant.species} width="100" height="100" />
-            <h3 data-value={plant.species} className="plantSpecies">Species: {plant.species} </h3>
-            <h3 data-value={plant.location} className="plantLocation">Location: {plant.location} </h3>
-            <h3 data-value={plant.needs} className="plantNeeds">Watering Needs: {convertNeedsToString(plant.needs)} </h3>
-            <h3 data-value={lastWatered} className="plantLastWatered">Last Watered On: {lastWatered} </h3>
-            <h3 className="plantNextWatering">Water On: {calculateNextWateringDate(plant)} </h3> 
-            <button className="deletePlant" onClick={deletePlant}>Remove</button>
-            <button className="editPlant" onClick={openEditPlant}>Edit</button>
+            <h3 data-value={plant.species} className="plantSpecies">Species: <b>{plant.species}</b> </h3>
+            <h3 data-value={plant.location} className="plantLocation">Location: <b>{plant.location}</b> </h3>
+            <h3 data-value={plant.needs} className="plantNeeds">Watering Needs: <b>{convertNeedsToString(plant.needs)}</b> </h3>
+            <h3 data-value={lastWatered} className="plantLastWatered">Last Watered On: <b>{lastWatered}</b> </h3>
+            <h3 className="plantNextWatering">Water On: <b>{calculateNextWateringDate(plant)}</b> </h3> 
+            <div className="buttons">
+              <button className="deletePlant" onClick={deletePlant}><i className="fas fa-trash-alt"></i> Remove</button>
+              <button className="editPlant" onClick={openEditPlant}><i className="fas fa-edit"></i> Edit</button>
+            </div>
         </div>
     );
   });
@@ -272,7 +274,7 @@ const createPlantModal = (csrf) => {
 };
 
 const openEditPlant = (e) => {
-  const div = e.currentTarget.parentElement;
+  const div = e.currentTarget.parentElement.parentElement;
 
   const plant = {
     id: div.id,

@@ -188,3 +188,127 @@ input[type=submit]:hover {
 {
     color: goldenrod;
 }
+
+main {
+    margin: 5% 15%;
+    padding: 2%;
+    border-radius: 1em;
+    background-color: #d4e5a1;
+}
+
+.topPanel {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#addButton {
+    background-color: transparent;
+    border: none;
+    color: #8e996b;
+    font-family: 'Lora', serif;
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+#addButton:hover {
+    color: #b7c68b;
+}
+
+#addButton .fas {
+    padding: 0.5em;
+}
+
+#sortPanel {
+    font-size: 12pt;
+}
+
+#sortPanel select {
+    background-color: #dedea7;
+    border: 2px solid #685642;
+    border-radius: 4pt;
+    color: #685642;
+    font-weight: bold;
+    font-size: 12pt;
+    font-family: 'Lora', serif;
+}
+
+input[type=radio] {
+    display: none;
+}
+
+#sortPanel label .fas {
+    padding: 0 0 0 0.5em;
+}
+
+#sortPanel label .fas:hover {
+    color: #8e996b;
+}
+
+.plantList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.plant {
+    width: 12em;
+    margin: 1em;
+    padding: 1em;
+    background-color: #f4f0cb;
+    border-radius: 1em;
+    text-align: center;
+}
+
+.plant img {
+    border: 2px solid #685642;
+}
+
+.plant h3 {
+    text-align: left;
+    font-size: 14pt;
+    font-weight: normal;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.deletePlant {
+    margin: 0.5em 0 0 0;
+    padding: 0.3em;
+    background-color: #f4f0cb;
+    border: 2px solid firebrick;
+    border-radius: 4pt;
+    color: firebrick;
+    font-weight: bold;
+    font-size: 12pt;
+    font-family: 'Lora', serif;
+}
+
+.deletePlant:hover {
+    background-color: firebrick;
+    border-color: firebrick;
+    color: #f4f0cb;
+}
+
+.editPlant {
+    margin: 0.5em 0 0 0;
+    padding: 0.3em;
+    background-color: #f4f0cb;
+    border: 2px solid #8e996b;
+    border-radius: 4pt;
+    color: #8e996b;
+    font-weight: bold;
+    font-size: 12pt;
+    font-family: 'Lora', serif;
+}
+
+.editPlant:hover {
+    background-color: #8e996b;
+    border-color: #8e996b;
+    color: #f4f0cb;   
+}

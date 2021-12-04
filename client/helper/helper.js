@@ -155,4 +155,4 @@ const sortPlants = (plants) => {
       sortBySpecies(plants, isAscending);
       break;
   }
-}
+};
