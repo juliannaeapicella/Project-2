@@ -15,6 +15,9 @@ const router = (app) => {
   app.get('/makePlant', mid.requiresLogin, controllers.Plant.makerPage);
   app.post('/makePlant', mid.requiresLogin, controllers.Plant.makePlant);
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('*', (req, res) => {
+    res.status(404).render('notFound');
+  });
 };
 
 module.exports = router;
