@@ -427,6 +427,7 @@ var createPlantModal = function createPlantModal(csrf) {
 };
 
 var openEditPlant = function openEditPlant(e) {
+  var today = convertDateToYYYYMMDD(new Date());
   var div = e.currentTarget.parentElement.parentElement;
   var plant = {
     id: div.id,
@@ -439,6 +440,7 @@ var openEditPlant = function openEditPlant(e) {
   toggleModal();
   ReactDOM.render( /*#__PURE__*/React.createElement(EditPlantNode, {
     csrf: token,
+    today: today,
     plant: plant
   }), document.querySelector("#modal"));
 };

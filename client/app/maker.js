@@ -299,6 +299,8 @@ const createPlantModal = (csrf) => {
 };
 
 const openEditPlant = (e) => {
+  const today = convertDateToYYYYMMDD(new Date());
+
   const div = e.currentTarget.parentElement.parentElement;
 
   const plant = {
@@ -313,7 +315,7 @@ const openEditPlant = (e) => {
   toggleModal();
 
   ReactDOM.render(
-    <EditPlantNode csrf={token} plant={plant} />, document.querySelector("#modal")
+    <EditPlantNode csrf={token} today={today} plant={plant} />, document.querySelector("#modal")
   );
 };
 
