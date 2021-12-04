@@ -98,9 +98,9 @@ AccountSchema.statics.updatePassword = (username, salt, password, callback) => {
   return AccountModel.findOneAndUpdate(search, update, callback);
 };
 
-AccountSchema.statics.enablePremium = (id, callback) => {
+AccountSchema.statics.enablePremium = (username, callback) => {
   const search = {
-    _id: id,
+    username,
   };
 
   const update = {

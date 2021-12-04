@@ -29,24 +29,6 @@ const handleSignup = (e) => {
   return false;
 };
 
-const handlePasswordChange = (e) => {
-  e.preventDefault();
-
-  if($("#oldPass").val() == '' || $("#newPass").val() == '' || $("#newPass2").val() == '') {
-      handleError("All fields are required.");
-      return false;
-  }
-
-  if ($("#newPass").val() !== $("#newPass2").val()) {
-      handleError("Passwords do not match.");
-      return false;
-  }
-
-  sendAjax('PUT', $("#passwordChangeForm").attr("action"), $("#passwordChangeForm").serialize(), redirect);
-
-  return false;
-};
-
 const LoginWindow = (props) => {
   return (
     <form id="loginForm" name="loginForm"
@@ -87,27 +69,6 @@ const SignupWindow = (props) => {
   );
 };
 
-const PasswordChangeWindow = (props) => {
-  return (
-    <form id="passwordChangeForm"
-      name="passwordChangeForm"
-      onSubmit={handlePasswordChange}
-      action="/changePassword"
-      method="PUT"
-      className="mainForm"
-    >
-      <label htmlFor="oldPass">Verify Password: </label>
-      <input id="oldPass" type="password" name="oldPass" placeholder="password" />
-      <label htmlFor="newPass">New Password: </label>
-      <input id="newPass" type="password" name="newPass" placeholder="new password" />
-      <label htmlFor="newPass2">Retype New Password: </label>
-      <input id="newPass2" type="password" name="newPass2" placeholder="retype new password" />
-      <input type="hidden" name="_csrf" value={props.csrf} />
-      <input className="formSubmit" type="submit" value="Change Password" />
-    </form>
-  );
-};
-
 const createLoginWindow = (csrf) => {
   ReactDOM.render(
       <LoginWindow csrf={csrf} />,
@@ -122,40 +83,28 @@ const createSignupWindow = (csrf) => {
     );
 };
 
-const createPasswordChangeWindow = (csrf) => {
-  ReactDOM.render(
-      <PasswordChangeWindow csrf={csrf} />,
-      document.querySelector("#content")
-  );
-};
-
 const setup = (csrf) => {
   const loginButton = document.querySelector("#loginButton");
   const signupButton = document.querySelector("#signupButton");
 
-  if (signupButton && loginButton) {
-    signupButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.currentTarget.classList.add("current");
-        loginButton.classList.remove("current");
-        createSignupWindow(csrf);
-        return false;
-    });
-  
-
-    loginButton.addEventListener("click", (e) => {
+  signupButton.addEventListener("click", (e) => {
       e.preventDefault();
       e.currentTarget.classList.add("current");
-      signupButton.classList.remove("current");
-      createLoginWindow(csrf);
+      loginButton.classList.remove("current");
+      createSignupWindow(csrf);
       return false;
-    });
-  
-    loginButton.classList.add("current");
+  });
+
+  loginButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.add("current");
+    signupButton.classList.remove("current");
     createLoginWindow(csrf);
-  } else {
-    createPasswordChangeWindow(csrf);
-  }
+    return false;
+  });
+  
+  loginButton.classList.add("current");
+  createLoginWindow(csrf);
 };
 
 const getToken = () => {

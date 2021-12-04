@@ -17,6 +17,56 @@ var handlePlant = function handlePlant(e) {
   return false;
 };
 
+var deletePlant = function deletePlant(e) {
+  e.preventDefault();
+  var data = "id=".concat(e.currentTarget.parentElement.id, "&_csrf=").concat(token);
+  sendAjax('DELETE', "/deletePlant", data, function () {
+    loadPlantsFromServer();
+  });
+  return false;
+};
+
+var editPlant = function editPlant(e) {
+  e.preventDefault();
+  var id = e.currentTarget.id.split('-')[0];
+  var data = "id=".concat(id, "&_csrf=").concat(token);
+
+  if ($("#plantSpeciesEdit").val() == '' || $("#plantLocationEdit").val() == '' || $("#plantNeedsEdit").val() == '' || $("#plantLastWateredEdit").val() == '') {
+    handleError("All fields are required.");
+    return false;
+  }
+
+  sendAjax('DELETE', "/deletePlant", data, function () {
+    sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function () {
+      loadPlantsFromServer();
+    });
+  });
+  return false;
+};
+
+var handlePasswordChange = function handlePasswordChange(e) {
+  e.preventDefault();
+
+  if ($("#oldPass").val() == '' || $("#newPass").val() == '' || $("#newPass2").val() == '') {
+    handleError("All fields are required.");
+    return false;
+  }
+
+  if ($("#newPass").val() !== $("#newPass2").val()) {
+    handleError("Passwords do not match.");
+    return false;
+  }
+
+  sendAjax('PUT', $("#passwordChangeForm").attr("action"), $("#passwordChangeForm").serialize(), redirect);
+  return false;
+};
+
+var subscribeToPremium = function subscribeToPremium(e) {
+  e.preventDefault();
+  sendAjax('PUT', $("#premiumForm").attr("action"), $("#premiumForm").serialize(), redirect);
+  return false;
+};
+
 var PlantForm = function PlantForm(props) {
   return /*#__PURE__*/React.createElement("form", {
     id: "plantForm",
@@ -234,6 +284,73 @@ var EditPlantNode = function EditPlantNode(props) {
   }));
 };
 
+var PasswordChangeWindow = function PasswordChangeWindow(props) {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "passwordChangeForm",
+    name: "passwordChangeForm",
+    onSubmit: handlePasswordChange,
+    action: "/changePassword",
+    method: "PUT",
+    className: "mainForm"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "oldPass"
+  }, "Verify Password: "), /*#__PURE__*/React.createElement("input", {
+    id: "oldPass",
+    type: "password",
+    name: "oldPass",
+    placeholder: "password"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "newPass"
+  }, "New Password: "), /*#__PURE__*/React.createElement("input", {
+    id: "newPass",
+    type: "password",
+    name: "newPass",
+    placeholder: "new password"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "newPass2"
+  }, "Retype New Password: "), /*#__PURE__*/React.createElement("input", {
+    id: "newPass2",
+    type: "password",
+    name: "newPass2",
+    placeholder: "retype new password"
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "hidden",
+    name: "_csrf",
+    value: props.csrf
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Change Password"
+  }));
+};
+
+var PremiumWindow = function PremiumWindow(props) {
+  return /*#__PURE__*/React.createElement("form", {
+    id: "premiumForm",
+    name: "premiumForm",
+    onSubmit: subscribeToPremium,
+    action: "/premium",
+    method: "PUT",
+    className: "mainForm"
+  }, /*#__PURE__*/React.createElement("p", null, "Subscribe to premium today to remove ads!"), /*#__PURE__*/React.createElement("input", {
+    type: "hidden",
+    name: "_csrf",
+    value: props.csrf
+  }), /*#__PURE__*/React.createElement("input", {
+    className: "formSubmit",
+    type: "submit",
+    value: "Subscribe"
+  }));
+};
+
+var UserStatus = function UserStatus(props) {
+  return /*#__PURE__*/React.createElement("p", null, "Account Type: ", props.isPremium ? /*#__PURE__*/React.createElement("span", {
+    className: "premium"
+  }, "Premium ", /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-star"
+  })) : /*#__PURE__*/React.createElement("span", null, "Free"));
+};
+
 var loadPlantsFromServer = function loadPlantsFromServer() {
   sendAjax('GET', '/getPlants', null, function (data) {
     ReactDOM.render( /*#__PURE__*/React.createElement(PlantList, {
@@ -242,13 +359,12 @@ var loadPlantsFromServer = function loadPlantsFromServer() {
   });
 };
 
-var deletePlant = function deletePlant(e) {
-  e.preventDefault();
-  var data = "id=".concat(e.currentTarget.parentElement.id, "&_csrf=").concat(token);
-  sendAjax('DELETE', "/deletePlant", data, function () {
-    loadPlantsFromServer();
-  });
-  return false;
+var createPlantModal = function createPlantModal(csrf) {
+  var today = convertDateToYYYYMMDD(new Date());
+  ReactDOM.render( /*#__PURE__*/React.createElement(PlantForm, {
+    csrf: csrf,
+    today: today
+  }), document.querySelector("#modal"));
 };
 
 var openEditPlant = function openEditPlant(e) {
@@ -261,44 +377,62 @@ var openEditPlant = function openEditPlant(e) {
     lastWatered: div.children[4].getAttribute("data-value"),
     image: div.children[0].getAttribute("data-value")
   };
+  toggleModal();
   ReactDOM.render( /*#__PURE__*/React.createElement(EditPlantNode, {
     csrf: token,
     plant: plant
-  }), document.querySelector("#plants"));
+  }), document.querySelector("#modal"));
 };
 
-var editPlant = function editPlant(e) {
-  e.preventDefault();
-  var id = e.currentTarget.id.split('-')[0];
-  var data = "id=".concat(id, "&_csrf=").concat(token);
+var createPasswordModal = function createPasswordModal(csrf) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(PasswordChangeWindow, {
+    csrf: token
+  }), document.querySelector("#modal"));
+};
 
-  if ($("#plantSpeciesEdit").val() == '' || $("#plantLocationEdit").val() == '' || $("#plantNeedsEdit").val() == '' || $("#plantLastWateredEdit").val() == '') {
-    handleError("All fields are required.");
-    return false;
-  }
-
-  sendAjax('DELETE', "/deletePlant", data, function () {
-    sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function () {
-      loadPlantsFromServer();
-    });
-  });
-  return false;
+var createPremiumModal = function createPremiumModal(csrf) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(PremiumWindow, {
+    csrf: token
+  }), document.querySelector("#modal"));
 };
 
 var setup = function setup(csrf) {
   sendAjax('GET', '/premium', null, function (result) {
-    console.log(result);
+    isPremium = result.isPremium;
+    ReactDOM.render( /*#__PURE__*/React.createElement(UserStatus, {
+      isPremium: isPremium
+    }), document.querySelector("#userStatus"));
   });
-  var today = convertDateToYYYYMMDD(new Date());
-  ReactDOM.render( /*#__PURE__*/React.createElement(PlantForm, {
-    csrf: csrf,
-    today: today
-  }), document.querySelector("#makePlant"));
+  token = csrf;
+  ReactDOM.render( /*#__PURE__*/React.createElement(UserStatus, {
+    username: "test",
+    isPremium: isPremium
+  }), document.querySelector("#userStatus"));
+  var addButton = document.querySelector("#addButton");
+  var passwordButton = document.querySelector("#passwordButton");
+  var premiumButton = document.querySelector("#premiumButton");
+  addButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleModal();
+    createPlantModal(csrf);
+    return false;
+  });
+  passwordButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleModal();
+    createPasswordModal(csrf);
+    return false;
+  });
+  premiumButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleModal();
+    createPremiumModal(csrf);
+    return false;
+  });
   ReactDOM.render( /*#__PURE__*/React.createElement(PlantForm, {
     plants: []
   }), document.querySelector("#plants"));
   ReactDOM.render( /*#__PURE__*/React.createElement(SortPanel, null), document.querySelector("#sortPanel"));
-  token = csrf;
   loadPlantsFromServer();
 };
 
@@ -334,6 +468,17 @@ var sendAjax = function sendAjax(type, action, data, success) {
       handleError(messageObj.error);
     }
   });
+};
+
+var toggleModal = function toggleModal(e) {
+  var modal = document.querySelector("#modal");
+  var isClosed = modal.style.display === 'none' || modal.style.display === '';
+
+  if (isClosed) {
+    modal.style.display = "block";
+  } else {
+    modal.style.display = "none";
+  }
 };
 
 var convertDateToYYYYMMDD = function convertDateToYYYYMMDD(date) {

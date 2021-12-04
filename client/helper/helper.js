@@ -21,6 +21,16 @@ const sendAjax = (type, action, data, success) => {
   });
 };
 
+const toggleModal = (e) => {
+  const modal = document.querySelector("#modal");
+  const isClosed = modal.style.display === 'none' || modal.style.display === '';
+  if (isClosed) {
+    modal.style.display = "block";
+  } else {
+    modal.style.display = "none";
+  }
+};
+
 const convertDateToYYYYMMDD = (date) => {
   let day = date.getDate();
   let month = date.getMonth() + 1;

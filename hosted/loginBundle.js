@@ -29,23 +29,6 @@ var handleSignup = function handleSignup(e) {
   return false;
 };
 
-var handlePasswordChange = function handlePasswordChange(e) {
-  e.preventDefault();
-
-  if ($("#oldPass").val() == '' || $("#newPass").val() == '' || $("#newPass2").val() == '') {
-    handleError("All fields are required.");
-    return false;
-  }
-
-  if ($("#newPass").val() !== $("#newPass2").val()) {
-    handleError("Passwords do not match.");
-    return false;
-  }
-
-  sendAjax('PUT', $("#passwordChangeForm").attr("action"), $("#passwordChangeForm").serialize(), redirect);
-  return false;
-};
-
 var LoginWindow = function LoginWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
     id: "loginForm",
@@ -119,46 +102,6 @@ var SignupWindow = function SignupWindow(props) {
   }));
 };
 
-var PasswordChangeWindow = function PasswordChangeWindow(props) {
-  return /*#__PURE__*/React.createElement("form", {
-    id: "passwordChangeForm",
-    name: "passwordChangeForm",
-    onSubmit: handlePasswordChange,
-    action: "/changePassword",
-    method: "PUT",
-    className: "mainForm"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "oldPass"
-  }, "Verify Password: "), /*#__PURE__*/React.createElement("input", {
-    id: "oldPass",
-    type: "password",
-    name: "oldPass",
-    placeholder: "password"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "newPass"
-  }, "New Password: "), /*#__PURE__*/React.createElement("input", {
-    id: "newPass",
-    type: "password",
-    name: "newPass",
-    placeholder: "new password"
-  }), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "newPass2"
-  }, "Retype New Password: "), /*#__PURE__*/React.createElement("input", {
-    id: "newPass2",
-    type: "password",
-    name: "newPass2",
-    placeholder: "retype new password"
-  }), /*#__PURE__*/React.createElement("input", {
-    type: "hidden",
-    name: "_csrf",
-    value: props.csrf
-  }), /*#__PURE__*/React.createElement("input", {
-    className: "formSubmit",
-    type: "submit",
-    value: "Change Password"
-  }));
-};
-
 var createLoginWindow = function createLoginWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(LoginWindow, {
     csrf: csrf
@@ -171,36 +114,25 @@ var createSignupWindow = function createSignupWindow(csrf) {
   }), document.querySelector("#content"));
 };
 
-var createPasswordChangeWindow = function createPasswordChangeWindow(csrf) {
-  ReactDOM.render( /*#__PURE__*/React.createElement(PasswordChangeWindow, {
-    csrf: csrf
-  }), document.querySelector("#content"));
-};
-
 var setup = function setup(csrf) {
   var loginButton = document.querySelector("#loginButton");
   var signupButton = document.querySelector("#signupButton");
-
-  if (signupButton && loginButton) {
-    signupButton.addEventListener("click", function (e) {
-      e.preventDefault();
-      e.currentTarget.classList.add("current");
-      loginButton.classList.remove("current");
-      createSignupWindow(csrf);
-      return false;
-    });
-    loginButton.addEventListener("click", function (e) {
-      e.preventDefault();
-      e.currentTarget.classList.add("current");
-      signupButton.classList.remove("current");
-      createLoginWindow(csrf);
-      return false;
-    });
-    loginButton.classList.add("current");
+  signupButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.currentTarget.classList.add("current");
+    loginButton.classList.remove("current");
+    createSignupWindow(csrf);
+    return false;
+  });
+  loginButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    e.currentTarget.classList.add("current");
+    signupButton.classList.remove("current");
     createLoginWindow(csrf);
-  } else {
-    createPasswordChangeWindow(csrf);
-  }
+    return false;
+  });
+  loginButton.classList.add("current");
+  createLoginWindow(csrf);
 };
 
 var getToken = function getToken() {
@@ -235,6 +167,17 @@ var sendAjax = function sendAjax(type, action, data, success) {
       handleError(messageObj.error);
     }
   });
+};
+
+var toggleModal = function toggleModal(e) {
+  var modal = document.querySelector("#modal");
+  var isClosed = modal.style.display === 'none' || modal.style.display === '';
+
+  if (isClosed) {
+    modal.style.display = "block";
+  } else {
+    modal.style.display = "none";
+  }
 };
 
 var convertDateToYYYYMMDD = function convertDateToYYYYMMDD(date) {

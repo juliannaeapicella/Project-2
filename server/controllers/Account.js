@@ -77,10 +77,6 @@ const signup = (request, response) => {
   });
 };
 
-const changePasswordPage = (req, res) => {
-  res.render('changePassword', { csrfToken: req.csrfToken() });
-};
-
 const changePassword = (request, response) => {
   const req = request;
   const res = response;
@@ -116,8 +112,8 @@ const changePassword = (request, response) => {
 };
 
 const enablePremium = (req, res) => {
-  const { _id } = req.session.account;
-  Account.AccountModel.enablePremium(_id, () => res.json({ redirect: '/makePlant' }));
+  const { username } = req.session.account;
+  Account.AccountModel.enablePremium(username, () => res.json({ redirect: '/makePlant' }));
 };
 
 const isPremium = (req, res) => {
@@ -143,7 +139,6 @@ module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.signup = signup;
-module.exports.changePasswordPage = changePasswordPage;
 module.exports.changePassword = changePassword;
 module.exports.enablePremium = enablePremium;
 module.exports.isPremium = isPremium;

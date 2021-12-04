@@ -19,6 +19,66 @@ const handlePlant = (e) => {
   return false;
 };
 
+const deletePlant = (e) => {
+  e.preventDefault();
+
+  const data = `id=${e.currentTarget.parentElement.id}&_csrf=${token}`
+
+  sendAjax('DELETE', "/deletePlant", data, () => {
+      loadPlantsFromServer();
+  });
+
+  return false;
+};
+
+const editPlant = (e) => {
+  e.preventDefault();
+
+  const id = e.currentTarget.id.split('-')[0];
+
+  const data = `id=${id}&_csrf=${token}`;
+
+  if($("#plantSpeciesEdit").val() == '' 
+  || $("#plantLocationEdit").val() == '' 
+  || $("#plantNeedsEdit").val() == ''
+  || $("#plantLastWateredEdit").val() == '') {
+    handleError("All fields are required.");
+    return false;
+  }
+
+  sendAjax('DELETE', "/deletePlant", data, () => {
+    sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function() {
+        loadPlantsFromServer();
+    });
+  });
+
+  return false;
+};
+
+const handlePasswordChange = (e) => {
+  e.preventDefault();
+
+  if($("#oldPass").val() == '' || $("#newPass").val() == '' || $("#newPass2").val() == '') {
+      handleError("All fields are required.");
+      return false;
+  }
+
+  if ($("#newPass").val() !== $("#newPass2").val()) {
+      handleError("Passwords do not match.");
+      return false;
+  }
+
+  sendAjax('PUT', $("#passwordChangeForm").attr("action"), $("#passwordChangeForm").serialize(), redirect);
+
+  return false;
+};
+
+const subscribeToPremium = (e) => {
+  e.preventDefault();
+  sendAjax('PUT', $("#premiumForm").attr("action"), $("#premiumForm").serialize(), redirect);
+  return false;
+};
+
 const PlantForm = (props) => {
   return (
     <form id="plantForm"
@@ -147,6 +207,53 @@ const EditPlantNode = function(props) {
   );
 };
 
+const PasswordChangeWindow = (props) => {
+  return (
+    <form id="passwordChangeForm"
+      name="passwordChangeForm"
+      onSubmit={handlePasswordChange}
+      action="/changePassword"
+      method="PUT"
+      className="mainForm"
+    >
+      <label htmlFor="oldPass">Verify Password: </label>
+      <input id="oldPass" type="password" name="oldPass" placeholder="password" />
+      <label htmlFor="newPass">New Password: </label>
+      <input id="newPass" type="password" name="newPass" placeholder="new password" />
+      <label htmlFor="newPass2">Retype New Password: </label>
+      <input id="newPass2" type="password" name="newPass2" placeholder="retype new password" />
+      <input type="hidden" name="_csrf" value={props.csrf} />
+      <input className="formSubmit" type="submit" value="Change Password" />
+    </form>
+  );
+};
+
+const PremiumWindow = (props) => {
+  return (
+    <form id="premiumForm"
+      name="premiumForm"
+      onSubmit={subscribeToPremium}
+      action="/premium"
+      method="PUT"
+      className="mainForm"
+    >
+      <p>Subscribe to premium today to remove ads!</p>
+      <input type="hidden" name="_csrf" value={props.csrf} />
+      <input className="formSubmit" type="submit" value="Subscribe" />
+    </form>
+  );
+};
+
+const UserStatus = (props) => {
+  return (
+    <p>Account Type: {
+      props.isPremium ? 
+      <span className="premium">Premium <i className="fas fa-star"></i></span> : 
+      <span>Free</span>
+    }</p>
+  );
+};
+
 const loadPlantsFromServer = () => {
   sendAjax('GET', '/getPlants', null, (data) => {
     ReactDOM.render(
@@ -155,16 +262,13 @@ const loadPlantsFromServer = () => {
   });
 };
 
-const deletePlant = (e) => {
-  e.preventDefault();
+const createPlantModal = (csrf) => {
+  const today = convertDateToYYYYMMDD(new Date());
 
-  const data = `id=${e.currentTarget.parentElement.id}&_csrf=${token}`
-
-  sendAjax('DELETE', "/deletePlant", data, () => {
-      loadPlantsFromServer();
-  });
-
-  return false;
+  ReactDOM.render(
+    <PlantForm csrf={csrf} today={today} />, 
+    document.querySelector("#modal")
+  );
 };
 
 const openEditPlant = (e) => {
@@ -179,45 +283,65 @@ const openEditPlant = (e) => {
     image: div.children[0].getAttribute("data-value"),
   };
 
+  toggleModal();
+
   ReactDOM.render(
-    <EditPlantNode csrf={token} plant={plant} />, document.querySelector("#plants")
+    <EditPlantNode csrf={token} plant={plant} />, document.querySelector("#modal")
   );
 };
 
-const editPlant = (e) => {
-  e.preventDefault();
+const createPasswordModal = (csrf) => {
+  ReactDOM.render(
+    <PasswordChangeWindow csrf={token} />,
+    document.querySelector("#modal")
+  );
+};
 
-  const id = e.currentTarget.id.split('-')[0];
-
-  const data = `id=${id}&_csrf=${token}`;
-
-  if($("#plantSpeciesEdit").val() == '' 
-  || $("#plantLocationEdit").val() == '' 
-  || $("#plantNeedsEdit").val() == ''
-  || $("#plantLastWateredEdit").val() == '') {
-    handleError("All fields are required.");
-    return false;
-  }
-
-  sendAjax('DELETE', "/deletePlant", data, () => {
-    sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function() {
-        loadPlantsFromServer();
-    });
-  });
-
-  return false;
+const createPremiumModal = (csrf) => {
+  ReactDOM.render(
+    <PremiumWindow csrf={token} />,
+    document.querySelector("#modal")
+  );
 };
 
 const setup = function(csrf) {
   sendAjax('GET', '/premium', null, (result) => {
-    console.log(result);
+    isPremium = result.isPremium;
+    ReactDOM.render(
+      <UserStatus isPremium={isPremium} />, document.querySelector("#userStatus")
+    );
   });
 
-  const today = convertDateToYYYYMMDD(new Date());
+  token = csrf;
 
   ReactDOM.render(
-      <PlantForm csrf={csrf} today={today} />, document.querySelector("#makePlant")
+    <UserStatus username={"test"} isPremium={isPremium} />, document.querySelector("#userStatus")
   );
+
+  const addButton = document.querySelector("#addButton");
+  const passwordButton = document.querySelector("#passwordButton");
+  const premiumButton = document.querySelector("#premiumButton");
+
+  addButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleModal();
+    createPlantModal(csrf);
+    return false;
+  });
+
+  passwordButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleModal();
+    createPasswordModal(csrf);
+    return false;
+  });
+
+  premiumButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleModal();
+    createPremiumModal(csrf);
+    return false;
+  });
 
   ReactDOM.render(
     <PlantForm plants={[]} />, document.querySelector("#plants")
@@ -226,8 +350,6 @@ const setup = function(csrf) {
   ReactDOM.render(
     <SortPanel />, document.querySelector("#sortPanel")
   );
-
-  token = csrf;
 
   loadPlantsFromServer();
 };
