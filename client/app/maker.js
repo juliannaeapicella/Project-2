@@ -1,6 +1,7 @@
 let token;
 let isPremium;
 
+// creates a plant object
 const handlePlant = (e) => {
   e.preventDefault();
 
@@ -20,6 +21,7 @@ const handlePlant = (e) => {
   return false;
 };
 
+// deletes a plant
 const deletePlant = (e) => {
   e.preventDefault();
 
@@ -32,6 +34,7 @@ const deletePlant = (e) => {
   return false;
 };
 
+// delete and remake plant object with new data
 const editPlant = (e) => {
   e.preventDefault();
 
@@ -57,6 +60,7 @@ const editPlant = (e) => {
   return false;
 };
 
+// update password
 const handlePasswordChange = (e) => {
   e.preventDefault();
 
@@ -75,6 +79,7 @@ const handlePasswordChange = (e) => {
   return false;
 };
 
+// upgrade account to premium subscription
 const subscribeToPremium = (e) => {
   e.preventDefault();
   sendAjax('PUT', $("#premiumForm").attr("action"), $("#premiumForm").serialize(), redirect);
@@ -82,6 +87,7 @@ const subscribeToPremium = (e) => {
   return false;
 };
 
+// react component for plant creation form
 const PlantForm = (props) => {
   return (
     <form id="plantForm"
@@ -123,6 +129,7 @@ const PlantForm = (props) => {
   );
 };
 
+// react component for the sorting inputs
 const SortPanel = function() {
   return (
     <div id="sortPanel">
@@ -140,6 +147,7 @@ const SortPanel = function() {
   );
 };
 
+// react component that renders all plant objects
 const PlantList = function(props) {
   if (props.plants.length === 0) {
       return (
@@ -154,6 +162,7 @@ const PlantList = function(props) {
   const plantNodes = props.plants.map(function(plant) {
     const lastWatered = plant.lastWatered.split('T')[0];
 
+    // create a react component for each plant
     return (
         <div key={plant._id} 
           id={plant._id} 
@@ -181,6 +190,7 @@ const PlantList = function(props) {
   );
 };
 
+// react component for plant editing form
 const EditPlantNode = function(props) {
   return (
     <form key={props.plant.id + "-edit"} 
@@ -220,6 +230,7 @@ const EditPlantNode = function(props) {
   );
 };
 
+// react component for password change form
 const PasswordChangeWindow = (props) => {
   return (
     <form id="passwordChangeForm"
@@ -244,6 +255,7 @@ const PasswordChangeWindow = (props) => {
   );
 };
 
+// react component for premium subscription window
 const PremiumWindow = (props) => {
   return (
     <form id="premiumForm"
@@ -263,6 +275,7 @@ const PremiumWindow = (props) => {
   );
 };
 
+// react component displaying user subscription status
 const UserStatus = (props) => {
   return (
     <p>Account Type: {
@@ -273,6 +286,7 @@ const UserStatus = (props) => {
   );
 };
 
+// inline ad placement
 const AdPlacement = (props) => {
   return (
     <div className="ad">
@@ -281,6 +295,7 @@ const AdPlacement = (props) => {
   );
 };
 
+// load plant objects from server
 const loadPlantsFromServer = () => {
   sendAjax('GET', '/getPlants', null, (data) => {
     ReactDOM.render(
@@ -289,6 +304,7 @@ const loadPlantsFromServer = () => {
   });
 };
 
+// open the plant creation form in a modal
 const createPlantModal = (csrf) => {
   const today = convertDateToYYYYMMDD(new Date());
 
@@ -298,6 +314,7 @@ const createPlantModal = (csrf) => {
   );
 };
 
+// open the plant editing form in a modal
 const openEditPlant = (e) => {
   const today = convertDateToYYYYMMDD(new Date());
 
@@ -319,6 +336,7 @@ const openEditPlant = (e) => {
   );
 };
 
+// open the password change form in a modal
 const createPasswordModal = (csrf) => {
   ReactDOM.render(
     <PasswordChangeWindow csrf={token} />,
@@ -326,6 +344,7 @@ const createPasswordModal = (csrf) => {
   );
 };
 
+// open the premium subscription button in a modal
 const createPremiumModal = (csrf) => {
   ReactDOM.render(
     <PremiumWindow csrf={token} />,
@@ -333,6 +352,7 @@ const createPremiumModal = (csrf) => {
   );
 };
 
+// set up starting components on page
 const setup = function(csrf) {
   const addButton = document.querySelector("#addButton");
   const passwordButton = document.querySelector("#passwordButton");
@@ -389,6 +409,7 @@ const setup = function(csrf) {
   loadPlantsFromServer();
 };
 
+// get CSRF token
 const getToken = () => {
   sendAjax('GET', '/getToken', null, (result) => {
     setup(result.csrfToken);

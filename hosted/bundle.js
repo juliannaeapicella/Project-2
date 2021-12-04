@@ -1,7 +1,7 @@
 "use strict";
 
 var token;
-var isPremium;
+var isPremium; // creates a plant object
 
 var handlePlant = function handlePlant(e) {
   e.preventDefault();
@@ -16,7 +16,8 @@ var handlePlant = function handlePlant(e) {
     loadPlantsFromServer();
   });
   return false;
-};
+}; // deletes a plant
+
 
 var deletePlant = function deletePlant(e) {
   e.preventDefault();
@@ -25,7 +26,8 @@ var deletePlant = function deletePlant(e) {
     loadPlantsFromServer();
   });
   return false;
-};
+}; // delete and remake plant object with new data
+
 
 var editPlant = function editPlant(e) {
   e.preventDefault();
@@ -44,7 +46,8 @@ var editPlant = function editPlant(e) {
     });
   });
   return false;
-};
+}; // update password
+
 
 var handlePasswordChange = function handlePasswordChange(e) {
   e.preventDefault();
@@ -61,14 +64,16 @@ var handlePasswordChange = function handlePasswordChange(e) {
 
   sendAjax('PUT', $("#passwordChangeForm").attr("action"), $("#passwordChangeForm").serialize(), redirect);
   return false;
-};
+}; // upgrade account to premium subscription
+
 
 var subscribeToPremium = function subscribeToPremium(e) {
   e.preventDefault();
   sendAjax('PUT', $("#premiumForm").attr("action"), $("#premiumForm").serialize(), redirect);
   hideAds();
   return false;
-};
+}; // react component for plant creation form
+
 
 var PlantForm = function PlantForm(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -140,7 +145,8 @@ var PlantForm = function PlantForm(props) {
   }, /*#__PURE__*/React.createElement("span", {
     id: "errorMessage"
   })));
-};
+}; // react component for the sorting inputs
+
 
 var SortPanel = function SortPanel() {
   return /*#__PURE__*/React.createElement("div", {
@@ -182,7 +188,8 @@ var SortPanel = function SortPanel() {
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-arrow-down"
   })));
-};
+}; // react component that renders all plant objects
+
 
 var PlantList = function PlantList(props) {
   if (props.plants.length === 0) {
@@ -195,7 +202,8 @@ var PlantList = function PlantList(props) {
 
   sortPlants(props.plants);
   var plantNodes = props.plants.map(function (plant) {
-    var lastWatered = plant.lastWatered.split('T')[0];
+    var lastWatered = plant.lastWatered.split('T')[0]; // create a react component for each plant
+
     return /*#__PURE__*/React.createElement("div", {
       key: plant._id,
       id: plant._id,
@@ -238,7 +246,8 @@ var PlantList = function PlantList(props) {
   return /*#__PURE__*/React.createElement("div", {
     className: "plantList"
   }, !isPremium && /*#__PURE__*/React.createElement(AdPlacement, null), plantNodes, !isPremium && /*#__PURE__*/React.createElement(AdPlacement, null));
-};
+}; // react component for plant editing form
+
 
 var EditPlantNode = function EditPlantNode(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -313,7 +322,8 @@ var EditPlantNode = function EditPlantNode(props) {
   }, /*#__PURE__*/React.createElement("span", {
     id: "errorMessage"
   })));
-};
+}; // react component for password change form
+
 
 var PasswordChangeWindow = function PasswordChangeWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -362,7 +372,8 @@ var PasswordChangeWindow = function PasswordChangeWindow(props) {
   }, /*#__PURE__*/React.createElement("span", {
     id: "errorMessage"
   })));
-};
+}; // react component for premium subscription window
+
 
 var PremiumWindow = function PremiumWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -390,7 +401,8 @@ var PremiumWindow = function PremiumWindow(props) {
   }, /*#__PURE__*/React.createElement("span", {
     id: "errorMessage"
   })));
-};
+}; // react component displaying user subscription status
+
 
 var UserStatus = function UserStatus(props) {
   return /*#__PURE__*/React.createElement("p", null, "Account Type: ", props.isPremium ? /*#__PURE__*/React.createElement("span", {
@@ -398,7 +410,8 @@ var UserStatus = function UserStatus(props) {
   }, "Premium ", /*#__PURE__*/React.createElement("i", {
     className: "fas fa-star"
   })) : /*#__PURE__*/React.createElement("span", null, "Free"));
-};
+}; // inline ad placement
+
 
 var AdPlacement = function AdPlacement(props) {
   return /*#__PURE__*/React.createElement("div", {
@@ -408,7 +421,8 @@ var AdPlacement = function AdPlacement(props) {
     src: "assets/img/ad.png",
     alt: "Ad"
   }));
-};
+}; // load plant objects from server
+
 
 var loadPlantsFromServer = function loadPlantsFromServer() {
   sendAjax('GET', '/getPlants', null, function (data) {
@@ -416,7 +430,8 @@ var loadPlantsFromServer = function loadPlantsFromServer() {
       plants: data.plants
     }), document.querySelector("#plants"));
   });
-};
+}; // open the plant creation form in a modal
+
 
 var createPlantModal = function createPlantModal(csrf) {
   var today = convertDateToYYYYMMDD(new Date());
@@ -424,7 +439,8 @@ var createPlantModal = function createPlantModal(csrf) {
     csrf: csrf,
     today: today
   }), document.querySelector("#modal"));
-};
+}; // open the plant editing form in a modal
+
 
 var openEditPlant = function openEditPlant(e) {
   var today = convertDateToYYYYMMDD(new Date());
@@ -443,19 +459,22 @@ var openEditPlant = function openEditPlant(e) {
     today: today,
     plant: plant
   }), document.querySelector("#modal"));
-};
+}; // open the password change form in a modal
+
 
 var createPasswordModal = function createPasswordModal(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(PasswordChangeWindow, {
     csrf: token
   }), document.querySelector("#modal"));
-};
+}; // open the premium subscription button in a modal
+
 
 var createPremiumModal = function createPremiumModal(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(PremiumWindow, {
     csrf: token
   }), document.querySelector("#modal"));
-};
+}; // set up starting components on page
+
 
 var setup = function setup(csrf) {
   var addButton = document.querySelector("#addButton");
@@ -500,7 +519,8 @@ var setup = function setup(csrf) {
   }), document.querySelector("#plants"));
   ReactDOM.render( /*#__PURE__*/React.createElement(SortPanel, null), document.querySelector("#sortPanel"));
   loadPlantsFromServer();
-};
+}; // get CSRF token
+
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
@@ -513,13 +533,16 @@ $(document).ready(function () {
 });
 "use strict";
 
+// print error message into dedicated error spot
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-};
+}; // redirect to a new page
+
 
 var redirect = function redirect(response) {
   window.location = response.redirect;
-};
+}; // send ajax call to server
+
 
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({
@@ -534,7 +557,8 @@ var sendAjax = function sendAjax(type, action, data, success) {
       handleError(messageObj.error);
     }
   });
-};
+}; // open or close the modal
+
 
 var toggleModal = function toggleModal(e) {
   var modal = document.querySelector("#modal");
@@ -545,7 +569,8 @@ var toggleModal = function toggleModal(e) {
   } else {
     modal.style.display = "none";
   }
-};
+}; // date formatter
+
 
 var convertDateToYYYYMMDD = function convertDateToYYYYMMDD(date) {
   var day = date.getDate();
@@ -561,13 +586,15 @@ var convertDateToYYYYMMDD = function convertDateToYYYYMMDD(date) {
   }
 
   return year + '-' + month + '-' + day;
-};
+}; // add days to date object
+
 
 var addDays = function addDays(date, days) {
   var result = new Date(date);
   result.setDate(result.getDate() + (days + 1));
   return result;
-};
+}; // number of days to add to lastWatered
+
 
 var convertNeedsToDays = function convertNeedsToDays(location, needs) {
   var days = location === 'Indoors' ? [1, 3, 7, 7, 7] : [2, 4, 7, 10, 14];
@@ -591,7 +618,8 @@ var convertNeedsToDays = function convertNeedsToDays(location, needs) {
     default:
       return days[2];
   }
-};
+}; // convert needs int to readable string
+
 
 var convertNeedsToString = function convertNeedsToString(needs) {
   switch (needs) {
@@ -613,12 +641,14 @@ var convertNeedsToString = function convertNeedsToString(needs) {
     default:
       return "Average";
   }
-};
+}; // calculate when to water next
+
 
 var calculateNextWateringDate = function calculateNextWateringDate(plant) {
   var date = addDays(plant.lastWatered, convertNeedsToDays(plant.location, plant.needs));
   return convertDateToYYYYMMDD(date);
-};
+}; // compare string values
+
 
 var compareStrings = function compareStrings(str1, str2) {
   if (str1 < str2) {
@@ -630,7 +660,8 @@ var compareStrings = function compareStrings(str1, str2) {
   }
 
   return 0;
-};
+}; // sort plants by species
+
 
 var sortBySpecies = function sortBySpecies(arr, isAscending) {
   if (isAscending) {
@@ -642,7 +673,8 @@ var sortBySpecies = function sortBySpecies(arr, isAscending) {
       return compareStrings(b.species, a.species);
     });
   }
-};
+}; // sort plants by last watered date
+
 
 var sortByLastWatered = function sortByLastWatered(arr, isAscending) {
   if (isAscending) {
@@ -654,7 +686,8 @@ var sortByLastWatered = function sortByLastWatered(arr, isAscending) {
       return new Date(b.lastWatered) - new Date(a.lastWatered);
     });
   }
-};
+}; // sort plant by to water next date
+
 
 var sortByToWaterNext = function sortByToWaterNext(arr, isAscending) {
   if (isAscending) {
@@ -666,7 +699,8 @@ var sortByToWaterNext = function sortByToWaterNext(arr, isAscending) {
       return new Date(calculateNextWateringDate(b)) - new Date(calculateNextWateringDate(a));
     });
   }
-};
+}; // handles how to sort plants
+
 
 var sortPlants = function sortPlants(plants) {
   var currentSort = document.querySelector('#sort').value;
@@ -696,7 +730,8 @@ var sortPlants = function sortPlants(plants) {
       sortBySpecies(plants, isAscending);
       break;
   }
-};
+}; // hide the sidebar ads
+
 
 var hideAds = function hideAds() {
   var ads = document.querySelectorAll(".ad");

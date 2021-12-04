@@ -58,6 +58,7 @@ PlantSchema.statics.toAPI = (doc) => ({
   image: doc.image,
 });
 
+// find plants by owner id
 PlantSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: convertId(ownerId),
@@ -66,6 +67,7 @@ PlantSchema.statics.findByOwner = (ownerId, callback) => {
   return PlantModel.find(search).select('species location needs lastWatered image').lean().exec(callback);
 };
 
+// delete plant with the given id
 PlantSchema.statics.delete = (id, callback) => PlantModel.deleteOne({ _id: id }).exec(callback);
 
 PlantModel = mongoose.model('Plant', PlantSchema);

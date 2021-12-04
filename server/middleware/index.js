@@ -1,3 +1,4 @@
+// ensure user is logged in
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
     return res.redirect('/');
@@ -5,6 +6,7 @@ const requiresLogin = (req, res, next) => {
   return next();
 };
 
+// ensure user is logged out
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
     return res.redirect('/makePlant');
@@ -13,6 +15,7 @@ const requiresLogout = (req, res, next) => {
   return next();
 };
 
+// ensure connection is secure
 const requiresSecure = (req, res, next) => {
   if (req.headers['x-forwarded-proto'] !== 'https') {
     return res.redirect(`https://${req.hostname}${req.url}`);
@@ -20,6 +23,7 @@ const requiresSecure = (req, res, next) => {
   return next();
 };
 
+// bypass security on dev
 const bypassSecure = (req, res, next) => {
   next();
 };

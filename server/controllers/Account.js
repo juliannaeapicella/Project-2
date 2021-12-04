@@ -2,15 +2,18 @@ const models = require('../models');
 
 const { Account } = models;
 
+// renders login page
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+// logs out user
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// logs in user
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -19,7 +22,7 @@ const login = (request, response) => {
   const password = `${req.body.pass}`;
 
   if (!username || !password) {
-    return res.status(400).json({ error: 'RAWR! All fields are required.' });
+    return res.status(400).json({ error: 'All fields are required.' });
   }
 
   return Account.AccountModel.authenticate(username, password, (err, account) => {
@@ -33,6 +36,7 @@ const login = (request, response) => {
   });
 };
 
+// signs up user
 const signup = (request, response) => {
   const req = request;
   const res = response;
@@ -42,13 +46,14 @@ const signup = (request, response) => {
   req.body.pass2 = `${req.body.pass2}`;
 
   if (!req.body.username || !req.body.pass || !req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! All fields are required.' });
+    return res.status(400).json({ error: 'All fields are required.' });
   }
 
   if (req.body.pass !== req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR! Passwords do not match.' });
+    return res.status(400).json({ error: 'Passwords do not match.' });
   }
 
+  // encrypt password
   return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
     const accountData = {
       username: req.body.username,
@@ -77,6 +82,7 @@ const signup = (request, response) => {
   });
 };
 
+// change preexisting user's password
 const changePassword = (request, response) => {
   const req = request;
   const res = response;
@@ -88,18 +94,20 @@ const changePassword = (request, response) => {
   req.body.newPass2 = `${req.body.newPass2}`;
 
   if (!req.body.oldPass || !req.body.newPass || !req.body.newPass2) {
-    return res.status(400).json({ error: 'RAWR! All fields are required.' });
+    return res.status(400).json({ error: 'All fields are required.' });
   }
 
   if (req.body.newPass !== req.body.newPass2) {
-    return res.status(400).json({ error: 'RAWR! Passwords do not match.' });
+    return res.status(400).json({ error: 'Passwords do not match.' });
   }
 
+  // authenticate
   return Account.AccountModel.authenticate(username, req.body.oldPass, (err, account) => {
     if (err || !account) {
       return res.status(401).json({ error: 'Wrong username or password!' });
     }
 
+    // encrypt new password
     return Account.AccountModel.generateHash(req.body.newPass, (salt, hash) => {
       const accountData = {
         salt,
@@ -111,11 +119,13 @@ const changePassword = (request, response) => {
   });
 };
 
+// update account to premium subscription
 const enablePremium = (req, res) => {
   const { username } = req.session.account;
   Account.AccountModel.enablePremium(username, () => res.json({ redirect: '/makePlant' }));
 };
 
+// return if account is premium
 const isPremium = (req, res) => {
   const { username } = req.session.account;
   Account.AccountModel.findByUsername(
@@ -124,6 +134,7 @@ const isPremium = (req, res) => {
   );
 };
 
+// get csrf token
 const getToken = (request, response) => {
   const req = request;
   const res = response;

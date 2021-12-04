@@ -2,6 +2,7 @@ const models = require('../models');
 
 const { Plant } = models;
 
+// render main app page
 const makerPage = (req, res) => {
   Plant.PlantModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
@@ -13,6 +14,7 @@ const makerPage = (req, res) => {
   });
 };
 
+// create a new plant object
 const makePlant = (req, res) => {
   if (!req.body.species
         || !req.body.location
@@ -48,6 +50,7 @@ const makePlant = (req, res) => {
   return plantPromise;
 };
 
+// get all plants associated with a username
 const getPlants = (request, response) => {
   const req = request;
   const res = response;
@@ -62,6 +65,7 @@ const getPlants = (request, response) => {
   });
 };
 
+// delete a plant object with the given id
 const deletePlant = (request, response) => Plant.PlantModel.delete(request.body.id, (err) => {
   if (err) {
     console.log(err);

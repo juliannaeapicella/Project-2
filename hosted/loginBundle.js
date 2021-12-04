@@ -1,5 +1,6 @@
 "use strict";
 
+// log in user
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
 
@@ -10,7 +11,8 @@ var handleLogin = function handleLogin(e) {
 
   sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
   return false;
-};
+}; // sign up user
+
 
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
@@ -27,7 +29,8 @@ var handleSignup = function handleSignup(e) {
 
   sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
   return false;
-};
+}; // react component for login form
+
 
 var LoginWindow = function LoginWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -60,7 +63,8 @@ var LoginWindow = function LoginWindow(props) {
     type: "submit",
     value: "Sign In"
   }));
-};
+}; // react component for signup form
+
 
 var SignupWindow = function SignupWindow(props) {
   return /*#__PURE__*/React.createElement("form", {
@@ -100,19 +104,22 @@ var SignupWindow = function SignupWindow(props) {
     type: "submit",
     value: "Sign Up"
   }));
-};
+}; // renders the login window
+
 
 var createLoginWindow = function createLoginWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(LoginWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
-};
+}; // renders the signup window
+
 
 var createSignupWindow = function createSignupWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(SignupWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
-};
+}; // set up starting components on page
+
 
 var setup = function setup(csrf) {
   var loginButton = document.querySelector("#loginButton");
@@ -133,7 +140,8 @@ var setup = function setup(csrf) {
   });
   loginButton.classList.add("current");
   createLoginWindow(csrf);
-};
+}; // get CSRF token
+
 
 var getToken = function getToken() {
   sendAjax('GET', '/getToken', null, function (result) {
@@ -146,13 +154,16 @@ $(document).ready(function () {
 });
 "use strict";
 
+// print error message into dedicated error spot
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-};
+}; // redirect to a new page
+
 
 var redirect = function redirect(response) {
   window.location = response.redirect;
-};
+}; // send ajax call to server
+
 
 var sendAjax = function sendAjax(type, action, data, success) {
   $.ajax({
@@ -167,7 +178,8 @@ var sendAjax = function sendAjax(type, action, data, success) {
       handleError(messageObj.error);
     }
   });
-};
+}; // open or close the modal
+
 
 var toggleModal = function toggleModal(e) {
   var modal = document.querySelector("#modal");
@@ -178,7 +190,8 @@ var toggleModal = function toggleModal(e) {
   } else {
     modal.style.display = "none";
   }
-};
+}; // date formatter
+
 
 var convertDateToYYYYMMDD = function convertDateToYYYYMMDD(date) {
   var day = date.getDate();
@@ -194,13 +207,15 @@ var convertDateToYYYYMMDD = function convertDateToYYYYMMDD(date) {
   }
 
   return year + '-' + month + '-' + day;
-};
+}; // add days to date object
+
 
 var addDays = function addDays(date, days) {
   var result = new Date(date);
   result.setDate(result.getDate() + (days + 1));
   return result;
-};
+}; // number of days to add to lastWatered
+
 
 var convertNeedsToDays = function convertNeedsToDays(location, needs) {
   var days = location === 'Indoors' ? [1, 3, 7, 7, 7] : [2, 4, 7, 10, 14];
@@ -224,7 +239,8 @@ var convertNeedsToDays = function convertNeedsToDays(location, needs) {
     default:
       return days[2];
   }
-};
+}; // convert needs int to readable string
+
 
 var convertNeedsToString = function convertNeedsToString(needs) {
   switch (needs) {
@@ -246,12 +262,14 @@ var convertNeedsToString = function convertNeedsToString(needs) {
     default:
       return "Average";
   }
-};
+}; // calculate when to water next
+
 
 var calculateNextWateringDate = function calculateNextWateringDate(plant) {
   var date = addDays(plant.lastWatered, convertNeedsToDays(plant.location, plant.needs));
   return convertDateToYYYYMMDD(date);
-};
+}; // compare string values
+
 
 var compareStrings = function compareStrings(str1, str2) {
   if (str1 < str2) {
@@ -263,7 +281,8 @@ var compareStrings = function compareStrings(str1, str2) {
   }
 
   return 0;
-};
+}; // sort plants by species
+
 
 var sortBySpecies = function sortBySpecies(arr, isAscending) {
   if (isAscending) {
@@ -275,7 +294,8 @@ var sortBySpecies = function sortBySpecies(arr, isAscending) {
       return compareStrings(b.species, a.species);
     });
   }
-};
+}; // sort plants by last watered date
+
 
 var sortByLastWatered = function sortByLastWatered(arr, isAscending) {
   if (isAscending) {
@@ -287,7 +307,8 @@ var sortByLastWatered = function sortByLastWatered(arr, isAscending) {
       return new Date(b.lastWatered) - new Date(a.lastWatered);
     });
   }
-};
+}; // sort plant by to water next date
+
 
 var sortByToWaterNext = function sortByToWaterNext(arr, isAscending) {
   if (isAscending) {
@@ -299,7 +320,8 @@ var sortByToWaterNext = function sortByToWaterNext(arr, isAscending) {
       return new Date(calculateNextWateringDate(b)) - new Date(calculateNextWateringDate(a));
     });
   }
-};
+}; // handles how to sort plants
+
 
 var sortPlants = function sortPlants(plants) {
   var currentSort = document.querySelector('#sort').value;
@@ -329,7 +351,8 @@ var sortPlants = function sortPlants(plants) {
       sortBySpecies(plants, isAscending);
       break;
   }
-};
+}; // hide the sidebar ads
+
 
 var hideAds = function hideAds() {
   var ads = document.querySelectorAll(".ad");

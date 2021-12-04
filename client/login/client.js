@@ -1,3 +1,4 @@
+// log in user
 const handleLogin = (e) => {
   e.preventDefault();
 
@@ -11,6 +12,7 @@ const handleLogin = (e) => {
   return false;
 };
 
+// sign up user
 const handleSignup = (e) => {
   e.preventDefault();
 
@@ -29,6 +31,7 @@ const handleSignup = (e) => {
   return false;
 };
 
+// react component for login form
 const LoginWindow = (props) => {
   return (
     <form id="loginForm" name="loginForm"
@@ -48,6 +51,7 @@ const LoginWindow = (props) => {
   );
 };
 
+// react component for signup form
 const SignupWindow = (props) => {
   return (
     <form id="signupForm"
@@ -69,6 +73,7 @@ const SignupWindow = (props) => {
   );
 };
 
+// renders the login window
 const createLoginWindow = (csrf) => {
   ReactDOM.render(
       <LoginWindow csrf={csrf} />,
@@ -76,6 +81,7 @@ const createLoginWindow = (csrf) => {
   );
 };
 
+// renders the signup window
 const createSignupWindow = (csrf) => {
     ReactDOM.render(
         <SignupWindow csrf={csrf} />,
@@ -83,6 +89,7 @@ const createSignupWindow = (csrf) => {
     );
 };
 
+// set up starting components on page
 const setup = (csrf) => {
   const loginButton = document.querySelector("#loginButton");
   const signupButton = document.querySelector("#signupButton");
@@ -107,6 +114,7 @@ const setup = (csrf) => {
   createLoginWindow(csrf);
 };
 
+// get CSRF token
 const getToken = () => {
     sendAjax('GET', '/getToken', null, (result) => {
         setup(result.csrfToken);

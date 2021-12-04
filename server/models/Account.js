@@ -40,6 +40,7 @@ AccountSchema.statics.toAPI = (doc) => ({
   _id: doc._id,
 });
 
+// validate password is correct
 const validatePassword = (doc, password, callback) => {
   const pass = doc.password;
 
@@ -51,6 +52,7 @@ const validatePassword = (doc, password, callback) => {
   });
 };
 
+// find account with the given username
 AccountSchema.statics.findByUsername = (name, callback) => {
   const search = {
     username: name,
@@ -59,12 +61,14 @@ AccountSchema.statics.findByUsername = (name, callback) => {
   return AccountModel.findOne(search, callback);
 };
 
+// generate encryption hash
 AccountSchema.statics.generateHash = (password, callback) => {
   const salt = crypto.randomBytes(saltLength);
 
   crypto.pbkdf2(password, salt, iterations, keyLength, 'RSA-SHA512', (err, hash) => callback(salt, hash.toString('hex')));
 };
 
+// authenticate user with given username and password
 AccountSchema.statics.authenticate = (username, password, callback) => {
   AccountModel.findByUsername(username, (err, doc) => {
     if (err) {
@@ -85,6 +89,7 @@ AccountSchema.statics.authenticate = (username, password, callback) => {
   });
 };
 
+// change password
 AccountSchema.statics.updatePassword = (username, salt, password, callback) => {
   const search = {
     username,
@@ -98,6 +103,7 @@ AccountSchema.statics.updatePassword = (username, salt, password, callback) => {
   return AccountModel.findOneAndUpdate(search, update, callback);
 };
 
+// update account to premium
 AccountSchema.statics.enablePremium = (username, callback) => {
   const search = {
     username,

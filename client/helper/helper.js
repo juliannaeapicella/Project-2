@@ -1,11 +1,14 @@
+// print error message into dedicated error spot
 const handleError = (message) => {
   $("#errorMessage").text(message);
 };
 
+// redirect to a new page
 const redirect = (response) => {
   window.location = response.redirect;
 };
 
+// send ajax call to server
 const sendAjax = (type, action, data, success) => {
   $.ajax({
     cache: false,
@@ -21,6 +24,7 @@ const sendAjax = (type, action, data, success) => {
   });
 };
 
+// open or close the modal
 const toggleModal = (e) => {
   const modal = document.querySelector("#modal");
   const isClosed = modal.style.display === 'none' || modal.style.display === '';
@@ -31,6 +35,7 @@ const toggleModal = (e) => {
   }
 };
 
+// date formatter
 const convertDateToYYYYMMDD = (date) => {
   let day = date.getDate();
   let month = date.getMonth() + 1;
@@ -47,12 +52,14 @@ const convertDateToYYYYMMDD = (date) => {
   return year + '-' + month + '-' + day;
 };
 
+// add days to date object
 const addDays = (date, days) => {
   var result = new Date(date);
   result.setDate(result.getDate() + (days + 1));
   return result;
 };
 
+// number of days to add to lastWatered
 const convertNeedsToDays = (location, needs) => {
   const days = location === 'Indoors' ? [1, 3, 7, 7, 7] : [2, 4, 7, 10, 14];
 
@@ -72,6 +79,7 @@ const convertNeedsToDays = (location, needs) => {
   }
 };
 
+// convert needs int to readable string
 const convertNeedsToString = (needs) => {
   switch (needs) {
     case 1:
@@ -89,11 +97,13 @@ const convertNeedsToString = (needs) => {
   }
 };
 
+// calculate when to water next
 const calculateNextWateringDate = (plant) => {
   const date = addDays(plant.lastWatered, convertNeedsToDays(plant.location, plant.needs));
   return convertDateToYYYYMMDD(date);
 };
 
+// compare string values
 const compareStrings = (str1, str2) => {
   if (str1 < str2) {
     return -1;
@@ -104,6 +114,7 @@ const compareStrings = (str1, str2) => {
   return 0;
 };
 
+// sort plants by species
 const sortBySpecies = (arr, isAscending) => {
   if (isAscending) {
     arr.sort((a, b) => compareStrings(a.species, b.species));
@@ -112,6 +123,7 @@ const sortBySpecies = (arr, isAscending) => {
   }
 };
 
+// sort plants by last watered date
 const sortByLastWatered = (arr, isAscending) => {
   if (isAscending) {
     arr.sort((a, b) => new Date(a.lastWatered) - new Date(b.lastWatered));
@@ -120,6 +132,7 @@ const sortByLastWatered = (arr, isAscending) => {
   }
 };
 
+// sort plant by to water next date
 const sortByToWaterNext = (arr, isAscending) => {
   if (isAscending) {
     arr.sort((a, b) => 
@@ -130,6 +143,7 @@ const sortByToWaterNext = (arr, isAscending) => {
   }
 };
 
+// handles how to sort plants
 const sortPlants = (plants) => {
   const currentSort = document.querySelector('#sort').value;
 
@@ -157,6 +171,7 @@ const sortPlants = (plants) => {
   }
 };
 
+// hide the sidebar ads
 const hideAds = () => {
   const ads = document.querySelectorAll(".ad");
 
