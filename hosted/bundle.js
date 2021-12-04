@@ -12,6 +12,7 @@ var handlePlant = function handlePlant(e) {
   }
 
   sendAjax('POST', $("#plantForm").attr("action"), $("#plantForm").serialize(), function () {
+    toggleModal();
     loadPlantsFromServer();
   });
   return false;
@@ -38,6 +39,7 @@ var editPlant = function editPlant(e) {
 
   sendAjax('DELETE', "/deletePlant", data, function () {
     sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function () {
+      toggleModal();
       loadPlantsFromServer();
     });
   });

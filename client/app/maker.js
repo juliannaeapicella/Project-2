@@ -13,6 +13,7 @@ const handlePlant = (e) => {
   }
 
   sendAjax('POST', $("#plantForm").attr("action"), $("#plantForm").serialize(), function() {
+      toggleModal();
       loadPlantsFromServer();
   });
 
@@ -48,6 +49,7 @@ const editPlant = (e) => {
 
   sendAjax('DELETE', "/deletePlant", data, () => {
     sendAjax('POST', '/makePlant', $("#" + id + "-edit").serialize(), function() {
+        toggleModal();
         loadPlantsFromServer();
     });
   });
