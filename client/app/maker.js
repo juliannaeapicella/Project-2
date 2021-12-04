@@ -87,6 +87,8 @@ const PlantForm = (props) => {
       action="/makePlant"
       method="POST"
       className="plantForm">
+        <span id="closeButton" onClick={toggleModal}><i className="fas fa-times-circle"></i></span>
+
         <label htmlFor="species">Species: </label>
         <input id="plantSpecies" type="text" name="species" placeholder="Mint, Rose, etc." />
 
@@ -113,6 +115,7 @@ const PlantForm = (props) => {
 
         <input type="hidden" name="_csrf" value={props.csrf} />
         <input className="makePlantSubmit" type="submit" value="Add Plant" />
+        <p className="error"><span id="errorMessage"></span></p>
     </form>
   );
 };
@@ -179,6 +182,8 @@ const EditPlantNode = function(props) {
       id={props.plant.id + "-edit"}
       onSubmit={editPlant}
       className="editing-plant" >
+        <span id="closeButton" onClick={toggleModal}><i className="fas fa-times-circle"></i></span>
+
         <label htmlFor="species">Species: </label>
         <input id="plantSpeciesEdit" type="text" name="species" placeholder="Mint, Rose, etc." defaultValue={props.plant.species} />
 
@@ -205,6 +210,7 @@ const EditPlantNode = function(props) {
 
         <input type="hidden" name="_csrf" value={props.csrf} />
         <input className="editPlantSubmit" type="submit" value="Save" />
+        <p className="error"><span id="errorMessage"></span></p>
     </form>
   );
 };
@@ -218,6 +224,8 @@ const PasswordChangeWindow = (props) => {
       method="PUT"
       className="mainForm"
     >
+      <span id="closeButton" onClick={toggleModal}><i className="fas fa-times-circle"></i></span>
+
       <label htmlFor="oldPass">Verify Password: </label>
       <input id="oldPass" type="password" name="oldPass" placeholder="password" />
       <label htmlFor="newPass">New Password: </label>
@@ -226,6 +234,7 @@ const PasswordChangeWindow = (props) => {
       <input id="newPass2" type="password" name="newPass2" placeholder="retype new password" />
       <input type="hidden" name="_csrf" value={props.csrf} />
       <input className="formSubmit" type="submit" value="Change Password" />
+      <p className="error"><span id="errorMessage"></span></p>
     </form>
   );
 };
@@ -239,9 +248,12 @@ const PremiumWindow = (props) => {
       method="PUT"
       className="mainForm"
     >
+      <span id="closeButton" onClick={toggleModal}><i className="fas fa-times-circle"></i></span>
+
       <p>Subscribe to premium today to remove ads!</p>
       <input type="hidden" name="_csrf" value={props.csrf} />
       <input className="formSubmit" type="submit" value="Subscribe" />
+      <p className="error"><span id="errorMessage"></span></p>
     </form>
   );
 };

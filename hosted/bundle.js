@@ -75,7 +75,12 @@ var PlantForm = function PlantForm(props) {
     action: "/makePlant",
     method: "POST",
     className: "plantForm"
-  }, /*#__PURE__*/React.createElement("label", {
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "closeButton",
+    onClick: toggleModal
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-times-circle"
+  })), /*#__PURE__*/React.createElement("label", {
     htmlFor: "species"
   }, "Species: "), /*#__PURE__*/React.createElement("input", {
     id: "plantSpecies",
@@ -127,7 +132,11 @@ var PlantForm = function PlantForm(props) {
     className: "makePlantSubmit",
     type: "submit",
     value: "Add Plant"
-  }));
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "error"
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "errorMessage"
+  })));
 };
 
 var SortPanel = function SortPanel() {
@@ -234,7 +243,12 @@ var EditPlantNode = function EditPlantNode(props) {
     id: props.plant.id + "-edit",
     onSubmit: editPlant,
     className: "editing-plant"
-  }, /*#__PURE__*/React.createElement("label", {
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "closeButton",
+    onClick: toggleModal
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-times-circle"
+  })), /*#__PURE__*/React.createElement("label", {
     htmlFor: "species"
   }, "Species: "), /*#__PURE__*/React.createElement("input", {
     id: "plantSpeciesEdit",
@@ -291,7 +305,11 @@ var EditPlantNode = function EditPlantNode(props) {
     className: "editPlantSubmit",
     type: "submit",
     value: "Save"
-  }));
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "error"
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "errorMessage"
+  })));
 };
 
 var PasswordChangeWindow = function PasswordChangeWindow(props) {
@@ -302,7 +320,12 @@ var PasswordChangeWindow = function PasswordChangeWindow(props) {
     action: "/changePassword",
     method: "PUT",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("label", {
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "closeButton",
+    onClick: toggleModal
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-times-circle"
+  })), /*#__PURE__*/React.createElement("label", {
     htmlFor: "oldPass"
   }, "Verify Password: "), /*#__PURE__*/React.createElement("input", {
     id: "oldPass",
@@ -331,7 +354,11 @@ var PasswordChangeWindow = function PasswordChangeWindow(props) {
     className: "formSubmit",
     type: "submit",
     value: "Change Password"
-  }));
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "error"
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "errorMessage"
+  })));
 };
 
 var PremiumWindow = function PremiumWindow(props) {
@@ -342,7 +369,12 @@ var PremiumWindow = function PremiumWindow(props) {
     action: "/premium",
     method: "PUT",
     className: "mainForm"
-  }, /*#__PURE__*/React.createElement("p", null, "Subscribe to premium today to remove ads!"), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "closeButton",
+    onClick: toggleModal
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-times-circle"
+  })), /*#__PURE__*/React.createElement("p", null, "Subscribe to premium today to remove ads!"), /*#__PURE__*/React.createElement("input", {
     type: "hidden",
     name: "_csrf",
     value: props.csrf
@@ -350,7 +382,11 @@ var PremiumWindow = function PremiumWindow(props) {
     className: "formSubmit",
     type: "submit",
     value: "Subscribe"
-  }));
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "error"
+  }, /*#__PURE__*/React.createElement("span", {
+    id: "errorMessage"
+  })));
 };
 
 var UserStatus = function UserStatus(props) {

@@ -108,7 +108,7 @@ p .fas {
     font-weight: bold;
 }
 
-#content input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=date] {
     padding: 0.3em;
     background-color: #dedea7;
     border: 2px solid #685642;
@@ -131,7 +131,7 @@ p .fas {
     font-family: 'Lora', serif;
 }
 
-input[type=submit]:hover {
+#content input[type=submit]:hover {
     background-color: #8e996b;
     border-color: #8e996b;
     color: #f4f0cb;
@@ -225,7 +225,7 @@ main {
     font-size: 12pt;
 }
 
-#sortPanel select {
+select {
     background-color: #dedea7;
     border: 2px solid #685642;
     border-radius: 4pt;
@@ -311,4 +311,68 @@ input[type=radio] {
     background-color: #8e996b;
     border-color: #8e996b;
     color: #f4f0cb;   
+}
+
+#plantForm,
+.editing-plant,
+#passwordChangeForm,
+#premiumForm {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 40%;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #ded29e;
+    border-radius: 1em;
+    color: #685642;
+    background-color: #f4f0cb;
+}
+
+#plantForm, 
+.editing-plant {
+    height: 25em;
+}
+  
+#passwordChangeForm {
+    height: 15em;
+}
+
+#premiumForm {
+    height: 5em;
+}
+
+#closeButton {
+    position: relative;
+    width: 100%;
+    color: #685642;
+}
+
+#closeButton i:hover {
+    color: firebrick;
+}
+  
+#closeButton i {
+    float: right;
+}
+
+#modal input[type=submit] {
+    width: 100%;
+    margin: 0.5em 0 0 0;
+    padding: 0.3em;
+    background-color: #f4f0cb;
+    border: 2px solid #8e996b;
+    border-radius: 4pt;
+    color: #8e996b;
+    font-weight: bold;
+    font-size: 12pt;
+    font-family: 'Lora', serif;
+}
+
+#modal input[type=submit]:hover {
+    background-color: #8e996b;
+    border-color: #8e996b;
+    color: #f4f0cb;
 }
