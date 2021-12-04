@@ -330,3 +330,11 @@ var sortPlants = function sortPlants(plants) {
       break;
   }
 };
+
+var hideAds = function hideAds() {
+  var ads = document.querySelectorAll(".ad");
+
+  for (var i = 0; i < ads.length; i++) {
+    ads[i].style.display = "none";
+  }
+};

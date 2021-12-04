@@ -76,6 +76,7 @@ const handlePasswordChange = (e) => {
 const subscribeToPremium = (e) => {
   e.preventDefault();
   sendAjax('PUT', $("#premiumForm").attr("action"), $("#premiumForm").serialize(), redirect);
+  hideAds();
   return false;
 };
 
@@ -171,7 +172,9 @@ const PlantList = function(props) {
 
   return (
     <div className="plantList">
+      {!isPremium && <AdPlacement />}
       {plantNodes}
+      {!isPremium && <AdPlacement />}
     </div>
   );
 };
@@ -268,6 +271,14 @@ const UserStatus = (props) => {
   );
 };
 
+const AdPlacement = (props) => {
+  return (
+    <div className="ad">
+      <img className="inlineAd" src="assets/img/ad.png" alt="Ad"></img>
+    </div>
+  );
+};
+
 const loadPlantsFromServer = () => {
   sendAjax('GET', '/getPlants', null, (data) => {
     ReactDOM.render(
@@ -334,6 +345,7 @@ const setup = function(csrf) {
 
     if (isPremium) {
       premiumButton.style.display = "none";
+      hideAds();
     }
   });
 

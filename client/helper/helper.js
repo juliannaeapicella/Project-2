@@ -156,3 +156,11 @@ const sortPlants = (plants) => {
       break;
   }
 };
+
+const hideAds = () => {
+  const ads = document.querySelectorAll(".ad");
+
+  for (let i = 0; i < ads.length; i++) {
+    ads[i].style.display = "none";
+  }
+};

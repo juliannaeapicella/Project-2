@@ -64,6 +64,7 @@ var handlePasswordChange = function handlePasswordChange(e) {
 var subscribeToPremium = function subscribeToPremium(e) {
   e.preventDefault();
   sendAjax('PUT', $("#premiumForm").attr("action"), $("#premiumForm").serialize(), redirect);
+  hideAds();
   return false;
 };
 
@@ -234,7 +235,7 @@ var PlantList = function PlantList(props) {
   });
   return /*#__PURE__*/React.createElement("div", {
     className: "plantList"
-  }, plantNodes);
+  }, !isPremium && /*#__PURE__*/React.createElement(AdPlacement, null), plantNodes, !isPremium && /*#__PURE__*/React.createElement(AdPlacement, null));
 };
 
 var EditPlantNode = function EditPlantNode(props) {
@@ -397,6 +398,16 @@ var UserStatus = function UserStatus(props) {
   })) : /*#__PURE__*/React.createElement("span", null, "Free"));
 };
 
+var AdPlacement = function AdPlacement(props) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "ad"
+  }, /*#__PURE__*/React.createElement("img", {
+    className: "inlineAd",
+    src: "assets/img/ad.png",
+    alt: "Ad"
+  }));
+};
+
 var loadPlantsFromServer = function loadPlantsFromServer() {
   sendAjax('GET', '/getPlants', null, function (data) {
     ReactDOM.render( /*#__PURE__*/React.createElement(PlantList, {
@@ -455,6 +466,7 @@ var setup = function setup(csrf) {
 
     if (isPremium) {
       premiumButton.style.display = "none";
+      hideAds();
     }
   });
   ReactDOM.render( /*#__PURE__*/React.createElement(UserStatus, {
@@ -679,5 +691,13 @@ var sortPlants = function sortPlants(plants) {
     default:
       sortBySpecies(plants, isAscending);
       break;
+  }
+};
+
+var hideAds = function hideAds() {
+  var ads = document.querySelectorAll(".ad");
+
+  for (var i = 0; i < ads.length; i++) {
+    ads[i].style.display = "none";
   }
 };
